@@ -25,13 +25,16 @@ This is a Laravel package that provides a wrapper around the official Fatture in
 ### Package Development
 - `composer prepare` - Discover package (runs automatically after autoload dump)
 
+### Artisan Commands
+- `php artisan fatture-in-cloud` - Main package command (renamed from `laravel-fattureincloud-php-sdk`)
+
 ## Architecture
 
 ### Package Structure
 - **Service Provider**: `LaravelFattureInCloudPhpSdkServiceProvider` - Main entry point using Spatie's Package Tools
 - **Main Class**: `LaravelFattureInCloudPhpSdk` - Core package functionality (currently empty - to be implemented)
-- **Facade**: `LaravelFattureInCloudPhpSdk` - Laravel facade for easy access
-- **Command**: `LaravelFattureInCloudPhpSdkCommand` - Artisan command placeholder
+- **Facade**: `FattureInCloud` - Laravel facade for easy access (renamed from `LaravelFattureInCloudPhpSdk`)
+- **Command**: `FattureInCloudCommand` - Artisan command (renamed from `LaravelFattureInCloudPhpSdkCommand`)
 
 ### Testing Setup
 - Uses Orchestra Testbench for Laravel package testing
@@ -43,11 +46,17 @@ This is a Laravel package that provides a wrapper around the official Fatture in
 - Package name: `laravel-fattureincloud-php-sdk`
 - Namespace: `codeman\LaravelFattureInCloudPhpSdk`
 - Supports config file, views, migrations, and commands
-- Empty config file ready for implementation
+- **OAuth2 Configuration System**: Complete configuration for authentication flows
+- **Environment Variables**: 
+  - `FATTUREINCLOUD_CLIENT_ID` - OAuth2 client ID (optional if using access token)
+  - `FATTUREINCLOUD_CLIENT_SECRET` - OAuth2 client secret (optional if using access token)
+  - `FATTUREINCLOUD_REDIRECT_URL` - OAuth2 redirect URL (defaults to app URL + callback path)
+  - `FATTUREINCLOUD_ACCESS_TOKEN` - Manual authentication token (takes precedence when set)
 
 ### Dependencies
 - PHP 8.4+ required
 - Laravel 11.x/12.x compatibility
+- **Fatture in Cloud PHP SDK**: `fattureincloud/fattureincloud-php-sdk: ^2.1` - Official SDK integration
 - Uses Spatie's Laravel Package Tools for package structure
 - Development tools: Pest, PHPStan, Laravel Pint
 
@@ -64,3 +73,20 @@ When ready to publish configurations:
 - Config: `php artisan vendor:publish --tag="laravel-fattureincloud-php-sdk-config"`
 - Migrations: `php artisan vendor:publish --tag="laravel-fattureincloud-php-sdk-migrations"`
 - Views: `php artisan vendor:publish --tag="laravel-fattureincloud-php-sdk-views"`
+
+## Breaking Changes
+
+### From PRs #9 and #10
+
+**PR #9 - Core Architecture & Setup:**
+- ✅ Facade renamed: `LaravelFattureInCloudPhpSdk` → `FattureInCloud`
+- ✅ Command renamed: `LaravelFattureInCloudPhpSdkCommand` → `FattureInCloudCommand`
+- ✅ Command signature changed: `laravel-fattureincloud-php-sdk` → `fatture-in-cloud`
+- ✅ Added official Fatture in Cloud PHP SDK dependency (`fattureincloud/fattureincloud-php-sdk: ^2.1`)
+
+**PR #10 - OAuth2 Configuration System:**
+- ✅ Comprehensive OAuth2 configuration implemented
+- ✅ Support for both OAuth2 flow and manual authentication via access token
+- ✅ Environment variables for authentication credentials
+- ✅ Smart defaults for redirect URLs
+- ✅ Security warnings and documentation included
