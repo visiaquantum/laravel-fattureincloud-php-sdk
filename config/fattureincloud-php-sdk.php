@@ -43,18 +43,19 @@ return [
     'client_secret' => env('FATTUREINCLOUD_CLIENT_SECRET'),
 
     /**
-     * OAuth2 Redirect URL
+     * OAuth2 Redirect URL (Optional Override)
+     *
+     * By default, the package will automatically generate the redirect URL using
+     * Laravel's route() helper for the callback route. Only set this if you need
+     * to override the automatically generated URL for specific deployment scenarios.
      *
      * The URL where users will be redirected after authorizing your application.
      * This must match exactly with the redirect URL configured in your
      * Fatture in Cloud OAuth2 application.
      *
-     * If not set, it will default to your Laravel application URL followed
-     * by the callback route path defined by this package.
-     *
      * @see https://developers.fattureincloud.it/docs/authentication/oauth2-code-flow
      */
-    'redirect_url' => env('FATTUREINCLOUD_REDIRECT_URL', config('app.url').'/fattureincloud/callback'),
+    'redirect_url' => env('FATTUREINCLOUD_REDIRECT_URL'),
 
     /**
      * Manual Authentication Access Token
