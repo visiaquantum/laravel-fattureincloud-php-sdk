@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a Laravel package that provides a wrapper around the official Fatture in Cloud PHP SDK. The package abstracts the complexity of the base SDK and offers a Laravel-native developer experience for interacting with the Fatture in Cloud API.
 
+- GitHub repository URL is https://github.com/visiaquantum/laravel-fattureincloud-php-sdk. owner: "visiaquantum", repo: "laravel-fattureincloud-php-sdk"
+
 ## Development Commands
 
 ### Testing
