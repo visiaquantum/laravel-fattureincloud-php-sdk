@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @see \Codeman\LaravelFattureInCloudPhpSdk\LaravelFattureInCloudPhpSdk
  */
-class LaravelFattureInCloudPhpSdk extends Facade
+class FattureInCloud extends Facade
 {
     protected static function getFacadeAccessor(): string
     {

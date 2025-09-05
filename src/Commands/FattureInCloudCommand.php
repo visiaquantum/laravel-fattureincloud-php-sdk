@@ -4,11 +4,11 @@ namespace Codeman\LaravelFattureInCloudPhpSdk\Commands;
 
 use Illuminate\Console\Command;
 
-class LaravelFattureInCloudPhpSdkCommand extends Command
+class FattureInCloudCommand extends Command
 {
-    public $signature = 'laravel-fattureincloud-php-sdk';
+    public $signature = 'fatture-in-cloud';
 
-    public $description = 'My command';
+    public $description = 'FattureInCloud SDK command';
 
     public function handle(): int
     {

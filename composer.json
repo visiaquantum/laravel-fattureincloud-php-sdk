@@ -21,7 +21,8 @@
     "require": {
         "php": "^8.3",
         "spatie/laravel-package-tools": "^1.16",
-        "illuminate/contracts": "^11.0||^12.0"
+        "illuminate/contracts": "^11.0||^12.0",
+        "fattureincloud/fattureincloud-php-sdk": "^2.1"
     },
     "require-dev": {
         "laravel/pint": "^1.14",
@@ -68,7 +69,7 @@
                 "Codeman\\LaravelFattureInCloudPhpSdk\\LaravelFattureInCloudPhpSdkServiceProvider"
             ],
             "aliases": {
-                "LaravelFattureInCloudPhpSdk": "Codeman\\LaravelFattureInCloudPhpSdk\\Facades\\LaravelFattureInCloudPhpSdk"
+                "FattureInCloud": "Codeman\\LaravelFattureInCloudPhpSdk\\Facades\\FattureInCloud"
             }
         }
     },

@@ -2,9 +2,9 @@
 
 namespace Codeman\LaravelFattureInCloudPhpSdk\Tests;
 
+use Codeman\LaravelFattureInCloudPhpSdk\LaravelFattureInCloudPhpSdkServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Codeman\LaravelFattureInCloudPhpSdk\LaravelFattureInCloudPhpSdkServiceProvider;
 
 class TestCase extends Orchestra
 {

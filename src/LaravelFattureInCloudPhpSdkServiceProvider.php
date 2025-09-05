@@ -2,9 +2,9 @@
 
 namespace Codeman\LaravelFattureInCloudPhpSdk;
 
+use Codeman\LaravelFattureInCloudPhpSdk\Commands\FattureInCloudCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Codeman\LaravelFattureInCloudPhpSdk\Commands\LaravelFattureInCloudPhpSdkCommand;
 
 class LaravelFattureInCloudPhpSdkServiceProvider extends PackageServiceProvider
 {
@@ -20,6 +20,6 @@ class LaravelFattureInCloudPhpSdkServiceProvider extends PackageServiceProvider
             ->hasConfigFile()
             ->hasViews()
             ->hasMigration('create_laravel_fattureincloud_php_sdk_table')
-            ->hasCommand(LaravelFattureInCloudPhpSdkCommand::class);
+            ->hasCommand(FattureInCloudCommand::class);
     }
 }
