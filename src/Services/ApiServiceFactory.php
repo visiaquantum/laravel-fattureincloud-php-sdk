@@ -58,7 +58,7 @@ class ApiServiceFactory implements ApiServiceFactoryInterface
     public function setCompanyId(?string $companyId): self
     {
         $this->companyId = $companyId;
-        
+
         return $this;
     }
 
