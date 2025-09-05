@@ -2,139 +2,57 @@
 
 namespace Codeman\LaravelFattureInCloudPhpSdk;
 
-use FattureInCloud\Configuration;
-use FattureInCloud\HeaderSelector;
-use FattureInCloud\OAuth2\OAuth2AuthorizationCode\OAuth2AuthorizationCodeManager;
-use FattureInCloud\OAuth2\OAuth2Error;
+use Codeman\LaravelFattureInCloudPhpSdk\Contracts\ApiServiceFactoryInterface;
+use Codeman\LaravelFattureInCloudPhpSdk\Contracts\OAuth2ManagerInterface;
+use Codeman\LaravelFattureInCloudPhpSdk\Contracts\TokenStorageInterface;
+use FattureInCloud\Api\ArchiveApi;
+use FattureInCloud\Api\CashbookApi;
+use FattureInCloud\Api\ClientsApi;
+use FattureInCloud\Api\CompaniesApi;
+use FattureInCloud\Api\InfoApi;
+use FattureInCloud\Api\IssuedDocumentsApi;
+use FattureInCloud\Api\PriceListsApi;
+use FattureInCloud\Api\ProductsApi;
+use FattureInCloud\Api\ReceiptsApi;
+use FattureInCloud\Api\ReceivedDocumentsApi;
+use FattureInCloud\Api\SettingsApi;
+use FattureInCloud\Api\SuppliersApi;
+use FattureInCloud\Api\TaxesApi;
+use FattureInCloud\Api\UserApi;
 use FattureInCloud\OAuth2\OAuth2TokenResponse;
-use GuzzleHttp\Client as HttpClient;
-use Illuminate\Config\Repository as ConfigRepository;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Str;
 
 class LaravelFattureInCloudPhpSdk
 {
-    protected HttpClient $httpClient;
+    private ?string $currentCompanyId = null;
 
-    protected Configuration $configuration;
+    public function __construct(
+        private OAuth2ManagerInterface $oauthManager,
+        private TokenStorageInterface $tokenStorage,
+        private ApiServiceFactoryInterface $apiFactory,
+        private string $contextKey = 'default'
+    ) {}
 
-    protected ?OAuth2AuthorizationCodeManager $oauthManager = null;
-
-    protected ConfigRepository $config;
-
-    protected ?string $currentCompanyId = null;
-
-    public function __construct(ConfigRepository $config)
+    public function auth(): OAuth2ManagerInterface
     {
-        $this->config = $config;
-        $this->initializeClient();
-    }
-
-    protected function initializeClient(): void
-    {
-        $this->configuration = new Configuration;
-        $this->httpClient = new HttpClient;
-
-        $accessToken = $this->getAccessToken();
-        if ($accessToken) {
-            $this->configuration->setAccessToken($accessToken);
-        }
-
-        if ($this->shouldUseOAuth2()) {
-            $this->initializeOAuth2Manager();
-        }
-    }
-
-    protected function initializeOAuth2Manager(): void
-    {
-        $clientId = $this->config->get('fattureincloud-php-sdk.client_id');
-        $clientSecret = $this->config->get('fattureincloud-php-sdk.client_secret');
-        $redirectUrl = $this->getRedirectUrl();
-
-        if (! $clientId || ! $clientSecret) {
-            throw new \InvalidArgumentException('OAuth2 client_id and client_secret are required for OAuth2 authentication');
-        }
-
-        $this->oauthManager = new OAuth2AuthorizationCodeManager(
-            $clientId,
-            $clientSecret,
-            $redirectUrl
-        );
-    }
-
-    protected function shouldUseOAuth2(): bool
-    {
-        return ! $this->config->get('fattureincloud-php-sdk.access_token');
-    }
-
-    protected function getAccessToken(): ?string
-    {
-        $accessToken = $this->config->get('fattureincloud-php-sdk.access_token');
-
-        if ($accessToken) {
-            return $accessToken;
-        }
-
-        return $this->getStoredAccessToken();
-    }
-
-    protected function getRedirectUrl(): string
-    {
-        $redirectUrl = $this->config->get('fattureincloud-php-sdk.redirect_url');
-
-        if ($redirectUrl) {
-            return $redirectUrl;
-        }
-
-        return config('app.url').'/fatture-in-cloud/callback';
+        return $this->oauthManager;
     }
 
     public function getAuthorizationUrl(array $scopes, ?string $state = null): string
     {
-        if (! $this->oauthManager) {
-            throw new \LogicException('OAuth2 manager not initialized. Cannot generate authorization URL.');
-        }
-
-        if (! $state) {
-            $state = Str::random(40);
-            $this->storeState($state);
-        }
-
         return $this->oauthManager->getAuthorizationUrl($scopes, $state);
     }
 
     public function fetchToken(string $code, string $state): OAuth2TokenResponse
     {
-        if (! $this->oauthManager) {
-            throw new \LogicException('OAuth2 manager not initialized. Cannot fetch token.');
-        }
-
-        if (! $this->validateState($state)) {
-            throw new \InvalidArgumentException('Invalid state parameter. Possible CSRF attack.');
-        }
-
-        $tokenResponse = $this->oauthManager->fetchToken($code);
-
-        if ($tokenResponse instanceof OAuth2Error) {
-            throw new \RuntimeException('OAuth2 error: '.$tokenResponse->getError().' - '.$tokenResponse->getErrorDescription());
-        }
-
-        $this->storeTokenResponse($tokenResponse);
-        $this->clearState();
-
-        $this->configuration->setAccessToken($tokenResponse->getAccessToken());
+        $tokenResponse = $this->oauthManager->fetchToken($code, $state);
+        $this->tokenStorage->store($this->contextKey, $tokenResponse);
 
         return $tokenResponse;
     }
 
     public function refreshToken(): ?OAuth2TokenResponse
     {
-        if (! $this->oauthManager) {
-            throw new \LogicException('OAuth2 manager not initialized. Cannot refresh token.');
-        }
-
-        $refreshToken = $this->getStoredRefreshToken();
+        $refreshToken = $this->tokenStorage->getRefreshToken($this->contextKey);
 
         if (! $refreshToken) {
             return null;
@@ -143,16 +61,13 @@ class LaravelFattureInCloudPhpSdk
         try {
             $tokenResponse = $this->oauthManager->refreshToken($refreshToken);
 
-            if ($tokenResponse instanceof OAuth2Error) {
-                throw new \RuntimeException('OAuth2 refresh error: '.$tokenResponse->getError().' - '.$tokenResponse->getErrorDescription());
+            if ($tokenResponse) {
+                $this->tokenStorage->store($this->contextKey, $tokenResponse);
             }
-
-            $this->storeTokenResponse($tokenResponse);
-            $this->configuration->setAccessToken($tokenResponse->getAccessToken());
 
             return $tokenResponse;
         } catch (\Exception $e) {
-            $this->clearStoredTokens();
+            $this->tokenStorage->clear($this->contextKey);
             throw $e;
         }
     }
@@ -160,6 +75,7 @@ class LaravelFattureInCloudPhpSdk
     public function setCompany(int $companyId): self
     {
         $this->currentCompanyId = (string) $companyId;
+        $this->apiFactory->setCompanyId($this->currentCompanyId);
 
         return $this;
     }
@@ -171,136 +87,116 @@ class LaravelFattureInCloudPhpSdk
 
     public function isTokenExpired(): bool
     {
-        $expiresAt = $this->getStoredTokenExpiration();
-
-        if (! $expiresAt) {
-            return true;
-        }
-
-        return now()->timestamp >= $expiresAt;
+        return $this->tokenStorage->isExpired($this->contextKey);
     }
 
-    protected function storeState(string $state): void
+    public function clearTokens(): void
     {
-        Session::put('fatture_in_cloud_oauth_state', $state);
+        $this->tokenStorage->clear($this->contextKey);
     }
 
-    protected function validateState(string $state): bool
+    public function clients(): ClientsApi
     {
-        $storedState = Session::get('fatture_in_cloud_oauth_state');
+        $this->ensureValidToken();
 
-        return $storedState && hash_equals($storedState, $state);
+        return $this->apiFactory->make('clients');
     }
 
-    protected function clearState(): void
+    public function companies(): CompaniesApi
     {
-        Session::forget('fatture_in_cloud_oauth_state');
+        $this->ensureValidToken();
+
+        return $this->apiFactory->make('companies');
     }
 
-    protected function storeTokenResponse(OAuth2TokenResponse $tokenResponse): void
+    public function info(): InfoApi
     {
-        $encryptedData = encrypt([
-            'access_token' => $tokenResponse->getAccessToken(),
-            'refresh_token' => $tokenResponse->getRefreshToken(),
-            'expires_at' => now()->addSeconds($tokenResponse->getExpiresIn())->timestamp,
-        ]);
+        $this->ensureValidToken();
 
-        Cache::put('fatture_in_cloud_tokens', $encryptedData, now()->addYear());
+        return $this->apiFactory->make('info');
     }
 
-    protected function getStoredAccessToken(): ?string
+    public function issuedDocuments(): IssuedDocumentsApi
     {
-        $tokens = $this->getStoredTokens();
+        $this->ensureValidToken();
 
-        return $tokens['access_token'] ?? null;
+        return $this->apiFactory->make('issuedDocuments');
     }
 
-    protected function getStoredRefreshToken(): ?string
+    public function products(): ProductsApi
     {
-        $tokens = $this->getStoredTokens();
+        $this->ensureValidToken();
 
-        return $tokens['refresh_token'] ?? null;
+        return $this->apiFactory->make('products');
     }
 
-    protected function getStoredTokenExpiration(): ?int
+    public function receipts(): ReceiptsApi
     {
-        $tokens = $this->getStoredTokens();
+        $this->ensureValidToken();
 
-        return $tokens['expires_at'] ?? null;
+        return $this->apiFactory->make('receipts');
     }
 
-    protected function getStoredTokens(): array
+    public function receivedDocuments(): ReceivedDocumentsApi
     {
-        $encryptedData = Cache::get('fatture_in_cloud_tokens');
+        $this->ensureValidToken();
 
-        if (! $encryptedData) {
-            return [];
-        }
-
-        try {
-            return decrypt($encryptedData);
-        } catch (\Exception $e) {
-            $this->clearStoredTokens();
-
-            return [];
-        }
+        return $this->apiFactory->make('receivedDocuments');
     }
 
-    protected function clearStoredTokens(): void
+    public function suppliers(): SuppliersApi
     {
-        Cache::forget('fatture_in_cloud_tokens');
+        $this->ensureValidToken();
+
+        return $this->apiFactory->make('suppliers');
     }
 
-    public function __call(string $method, array $arguments)
+    public function taxes(): TaxesApi
     {
-        if ($this->isTokenExpired() && $this->shouldUseOAuth2()) {
+        $this->ensureValidToken();
+
+        return $this->apiFactory->make('taxes');
+    }
+
+    public function user(): UserApi
+    {
+        $this->ensureValidToken();
+
+        return $this->apiFactory->make('user');
+    }
+
+    public function settings(): SettingsApi
+    {
+        $this->ensureValidToken();
+
+        return $this->apiFactory->make('settings');
+    }
+
+    public function archiveDocuments(): ArchiveApi
+    {
+        $this->ensureValidToken();
+
+        return $this->apiFactory->make('archiveDocuments');
+    }
+
+    public function cashbook(): CashbookApi
+    {
+        $this->ensureValidToken();
+
+        return $this->apiFactory->make('cashbook');
+    }
+
+    public function priceLists(): PriceListsApi
+    {
+        $this->ensureValidToken();
+
+        return $this->apiFactory->make('priceLists');
+    }
+
+    private function ensureValidToken(): void
+    {
+        if ($this->isTokenExpired() && $this->oauthManager->isInitialized()) {
             $this->refreshToken();
         }
-
-        $apiClass = $this->resolveApiClass($method);
-
-        if (! $apiClass) {
-            throw new \BadMethodCallException("Method {$method} not found");
-        }
-
-        $apiInstance = new $apiClass(
-            $this->httpClient,
-            $this->configuration,
-            new HeaderSelector
-        );
-
-        return $apiInstance;
-    }
-
-    protected function resolveApiClass(string $method): ?string
-    {
-        $apiMappings = [
-            'clients' => \FattureInCloud\Api\ClientsApi::class,
-            'companies' => \FattureInCloud\Api\CompaniesApi::class,
-            'info' => \FattureInCloud\Api\InfoApi::class,
-            'issuedDocuments' => \FattureInCloud\Api\IssuedDocumentsApi::class,
-            'products' => \FattureInCloud\Api\ProductsApi::class,
-            'receipts' => \FattureInCloud\Api\ReceiptsApi::class,
-            'receivedDocuments' => \FattureInCloud\Api\ReceivedDocumentsApi::class,
-            'suppliers' => \FattureInCloud\Api\SuppliersApi::class,
-            'taxes' => \FattureInCloud\Api\TaxesApi::class,
-            'user' => \FattureInCloud\Api\UserApi::class,
-            'settings' => \FattureInCloud\Api\SettingsApi::class,
-            'archiveDocuments' => \FattureInCloud\Api\ArchiveApi::class,
-            'cashbook' => \FattureInCloud\Api\CashbookApi::class,
-            'priceLists' => \FattureInCloud\Api\PriceListsApi::class,
-        ];
-
-        return $apiMappings[$method] ?? null;
-    }
-
-    public function getConfiguration(): Configuration
-    {
-        return $this->configuration;
-    }
-
-    public function getHttpClient(): HttpClient
-    {
-        return $this->httpClient;
     }
 }
