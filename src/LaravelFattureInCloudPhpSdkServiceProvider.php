@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace Codeman\LaravelFattureInCloudPhpSdk;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use VendorName\Skeleton\Commands\SkeletonCommand;
+use Codeman\LaravelFattureInCloudPhpSdk\Commands\LaravelFattureInCloudPhpSdkCommand;
 
-class SkeletonServiceProvider extends PackageServiceProvider
+class LaravelFattureInCloudPhpSdkServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
@@ -16,10 +16,10 @@ class SkeletonServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('skeleton')
+            ->name('laravel-fattureincloud-php-sdk')
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigration('create_migration_table_name_table')
-            ->hasCommand(SkeletonCommand::class);
+            ->hasMigration('create_laravel_fattureincloud_php_sdk_table')
+            ->hasCommand(LaravelFattureInCloudPhpSdkCommand::class);
     }
 }

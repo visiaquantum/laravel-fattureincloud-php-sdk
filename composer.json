@@ -1,17 +1,20 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "codeman/laravel-fattureincloud-php-sdk",
+    "description": "This package provides a simple, expressive, and robust wrapper around the official Fatture in Cloud PHP SDK. Its primary purpose is to abstract the complexity of the base SDK, offering a Laravel-native developer experience for interacting with the Fatture in Cloud API.",
     "keywords": [
-        ":vendor_name",
+        "Codeman by Visia Quantum srl",
+        "codeman",
+        "visiaquantum",
         "laravel",
-        ":package_slug"
+        "laravel-fattureincloud-php-sdk",
+        "fattureincloud"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/visiaquantum/laravel-fattureincloud-php-sdk",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Mattia Migliorini",
+            "email": "mattia@codeman.it",
             "role": "Developer"
         }
     ],
@@ -30,18 +33,17 @@
         "pestphp/pest-plugin-laravel": "^4.0",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan-deprecation-rules": "^2.0",
-        "phpstan/phpstan-phpunit": "^2.0",
-        "spatie/laravel-ray": "^1.35"
+        "phpstan/phpstan-phpunit": "^2.0"
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "Codeman\\LaravelFattureInCloudPhpSdk\\": "src/",
+            "Codeman\\LaravelFattureInCloudPhpSdk\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/",
+            "Codeman\\LaravelFattureInCloudPhpSdk\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -63,10 +65,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "Codeman\\LaravelFattureInCloudPhpSdk\\LaravelFattureInCloudPhpSdkServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "LaravelFattureInCloudPhpSdk": "Codeman\\LaravelFattureInCloudPhpSdk\\Facades\\LaravelFattureInCloudPhpSdk"
             }
         }
     },

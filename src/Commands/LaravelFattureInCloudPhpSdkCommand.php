@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Codeman\LaravelFattureInCloudPhpSdk\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class LaravelFattureInCloudPhpSdkCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-fattureincloud-php-sdk';
 
     public $description = 'My command';
 
