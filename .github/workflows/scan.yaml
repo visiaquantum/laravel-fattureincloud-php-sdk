@@ -1,0 +1,19 @@
+name: Scan
+
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    uses: visiaquantum/github-workflows/.github/workflows/laravel-scan.yaml@main
+    with:
+      php_version: "8.4"
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
