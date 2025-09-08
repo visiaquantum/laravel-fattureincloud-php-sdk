@@ -2,9 +2,9 @@
 
 namespace Codeman\LaravelFattureInCloudPhpSdk;
 
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\ApiServiceFactoryInterface;
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\OAuth2ManagerInterface;
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\TokenStorageInterface;
+use Codeman\LaravelFattureInCloudPhpSdk\Contracts\ApiServiceFactory;
+use Codeman\LaravelFattureInCloudPhpSdk\Contracts\OAuth2Manager;
+use Codeman\LaravelFattureInCloudPhpSdk\Contracts\TokenStorage;
 use FattureInCloud\Api\ArchiveApi;
 use FattureInCloud\Api\CashbookApi;
 use FattureInCloud\Api\ClientsApi;
@@ -26,13 +26,13 @@ class LaravelFattureInCloudPhpSdk
     private ?string $currentCompanyId = null;
 
     public function __construct(
-        private OAuth2ManagerInterface $oauthManager,
-        private TokenStorageInterface $tokenStorage,
-        private ApiServiceFactoryInterface $apiFactory,
+        private OAuth2Manager $oauthManager,
+        private TokenStorage $tokenStorage,
+        private ApiServiceFactory $apiFactory,
         private string $contextKey = 'default'
     ) {}
 
-    public function auth(): OAuth2ManagerInterface
+    public function auth(): OAuth2Manager
     {
         return $this->oauthManager;
     }

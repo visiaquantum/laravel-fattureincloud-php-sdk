@@ -2,7 +2,7 @@
 
 namespace Codeman\LaravelFattureInCloudPhpSdk\Contracts;
 
-interface StateManagerInterface
+interface StateManager
 {
     public function store(string $state): void;
 

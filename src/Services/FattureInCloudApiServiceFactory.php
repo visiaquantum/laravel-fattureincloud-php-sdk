@@ -2,13 +2,13 @@
 
 namespace Codeman\LaravelFattureInCloudPhpSdk\Services;
 
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\ApiServiceFactoryInterface;
+use Codeman\LaravelFattureInCloudPhpSdk\Contracts\ApiServiceFactory as ApiServiceFactoryContract;
 use Codeman\LaravelFattureInCloudPhpSdk\Exceptions\UnsupportedServiceException;
 use FattureInCloud\Configuration;
 use FattureInCloud\HeaderSelector;
 use GuzzleHttp\Client as HttpClient;
 
-class ApiServiceFactory implements ApiServiceFactoryInterface
+class FattureInCloudApiServiceFactory implements ApiServiceFactoryContract
 {
     private array $serviceMapping = [
         'clients' => \FattureInCloud\Api\ClientsApi::class,

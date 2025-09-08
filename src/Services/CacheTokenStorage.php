@@ -2,12 +2,12 @@
 
 namespace Codeman\LaravelFattureInCloudPhpSdk\Services;
 
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\TokenStorageInterface;
+use Codeman\LaravelFattureInCloudPhpSdk\Contracts\TokenStorage as TokenStorageContract;
 use FattureInCloud\OAuth2\OAuth2TokenResponse;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Encryption\Encrypter;
 
-class TokenStorage implements TokenStorageInterface
+class CacheTokenStorage implements TokenStorageContract
 {
     public function __construct(
         private CacheRepository $cache,

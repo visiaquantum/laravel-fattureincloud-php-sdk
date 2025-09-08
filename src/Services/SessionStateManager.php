@@ -2,10 +2,10 @@
 
 namespace Codeman\LaravelFattureInCloudPhpSdk\Services;
 
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\StateManagerInterface;
+use Codeman\LaravelFattureInCloudPhpSdk\Contracts\StateManager as StateManagerContract;
 use Illuminate\Contracts\Session\Session;
 
-class StateManager implements StateManagerInterface
+class SessionStateManager implements StateManagerContract
 {
     private const STATE_KEY = 'fatture_in_cloud_oauth_state';
 

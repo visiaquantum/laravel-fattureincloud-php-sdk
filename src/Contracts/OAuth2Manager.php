@@ -4,7 +4,7 @@ namespace Codeman\LaravelFattureInCloudPhpSdk\Contracts;
 
 use FattureInCloud\OAuth2\OAuth2TokenResponse;
 
-interface OAuth2ManagerInterface
+interface OAuth2Manager
 {
     public function getAuthorizationUrl(array $scopes, ?string $state = null): string;
 

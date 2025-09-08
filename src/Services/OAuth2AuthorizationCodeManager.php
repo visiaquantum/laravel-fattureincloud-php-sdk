@@ -2,20 +2,20 @@
 
 namespace Codeman\LaravelFattureInCloudPhpSdk\Services;
 
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\OAuth2ManagerInterface;
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\StateManagerInterface;
+use Codeman\LaravelFattureInCloudPhpSdk\Contracts\OAuth2Manager as OAuth2ManagerContract;
+use Codeman\LaravelFattureInCloudPhpSdk\Contracts\StateManager as StateManagerContract;
 use Codeman\LaravelFattureInCloudPhpSdk\Exceptions\OAuth2Exception;
-use FattureInCloud\OAuth2\OAuth2AuthorizationCode\OAuth2AuthorizationCodeManager;
+use FattureInCloud\OAuth2\OAuth2AuthorizationCode\OAuth2AuthorizationCodeManager as FattureInCloudOAuth2Manager;
 use FattureInCloud\OAuth2\OAuth2Error;
 use FattureInCloud\OAuth2\OAuth2TokenResponse;
 use Illuminate\Support\Str;
 
-class OAuth2Manager implements OAuth2ManagerInterface
+class OAuth2AuthorizationCodeManager implements OAuth2ManagerContract
 {
-    private ?OAuth2AuthorizationCodeManager $oauthManager = null;
+    private ?FattureInCloudOAuth2Manager $oauthManager = null;
 
     public function __construct(
-        private StateManagerInterface $stateManager,
+        private StateManagerContract $stateManager,
         private ?string $clientId = null,
         private ?string $clientSecret = null,
         private ?string $redirectUrl = null
@@ -85,7 +85,7 @@ class OAuth2Manager implements OAuth2ManagerInterface
             return;
         }
 
-        $this->oauthManager = new OAuth2AuthorizationCodeManager(
+        $this->oauthManager = new FattureInCloudOAuth2Manager(
             $this->clientId,
             $this->clientSecret,
             $this->redirectUrl

@@ -3,14 +3,14 @@
 namespace Codeman\LaravelFattureInCloudPhpSdk;
 
 use Codeman\LaravelFattureInCloudPhpSdk\Commands\FattureInCloudCommand;
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\ApiServiceFactoryInterface;
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\OAuth2ManagerInterface;
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\StateManagerInterface;
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\TokenStorageInterface;
-use Codeman\LaravelFattureInCloudPhpSdk\Services\ApiServiceFactory;
-use Codeman\LaravelFattureInCloudPhpSdk\Services\OAuth2Manager;
-use Codeman\LaravelFattureInCloudPhpSdk\Services\StateManager;
-use Codeman\LaravelFattureInCloudPhpSdk\Services\TokenStorage;
+use Codeman\LaravelFattureInCloudPhpSdk\Contracts\ApiServiceFactory as ApiServiceFactoryContract;
+use Codeman\LaravelFattureInCloudPhpSdk\Contracts\OAuth2Manager as OAuth2ManagerContract;
+use Codeman\LaravelFattureInCloudPhpSdk\Contracts\StateManager as StateManagerContract;
+use Codeman\LaravelFattureInCloudPhpSdk\Contracts\TokenStorage as TokenStorageContract;
+use Codeman\LaravelFattureInCloudPhpSdk\Services\CacheTokenStorage;
+use Codeman\LaravelFattureInCloudPhpSdk\Services\FattureInCloudApiServiceFactory;
+use Codeman\LaravelFattureInCloudPhpSdk\Services\OAuth2AuthorizationCodeManager;
+use Codeman\LaravelFattureInCloudPhpSdk\Services\SessionStateManager;
 use FattureInCloud\Configuration;
 use FattureInCloud\HeaderSelector;
 use GuzzleHttp\Client as HttpClient;
@@ -49,8 +49,8 @@ class LaravelFattureInCloudPhpSdkServiceProvider extends PackageServiceProvider
 
     private function registerTokenStorage(): void
     {
-        $this->app->singleton(TokenStorageInterface::class, function ($app) {
-            return new TokenStorage(
+        $this->app->singleton(TokenStorageContract::class, function ($app) {
+            return new CacheTokenStorage(
                 $app->make(CacheRepository::class),
                 $app->make(Encrypter::class)
             );
@@ -59,18 +59,18 @@ class LaravelFattureInCloudPhpSdkServiceProvider extends PackageServiceProvider
 
     private function registerStateManager(): void
     {
-        $this->app->singleton(StateManagerInterface::class, function ($app) {
-            return new StateManager($app->make(Session::class));
+        $this->app->singleton(StateManagerContract::class, function ($app) {
+            return new SessionStateManager($app->make(Session::class));
         });
     }
 
     private function registerOAuth2Manager(): void
     {
-        $this->app->singleton(OAuth2ManagerInterface::class, function ($app) {
+        $this->app->singleton(OAuth2ManagerContract::class, function ($app) {
             $config = $app->make(ConfigRepository::class);
 
-            return new OAuth2Manager(
-                $app->make(StateManagerInterface::class),
+            return new OAuth2AuthorizationCodeManager(
+                $app->make(StateManagerContract::class),
                 $config->get('fattureincloud-php-sdk.client_id'),
                 $config->get('fattureincloud-php-sdk.client_secret'),
                 $this->getRedirectUrl($config)
@@ -80,7 +80,7 @@ class LaravelFattureInCloudPhpSdkServiceProvider extends PackageServiceProvider
 
     private function registerApiServiceFactory(): void
     {
-        $this->app->singleton(ApiServiceFactoryInterface::class, function ($app) {
+        $this->app->singleton(ApiServiceFactoryContract::class, function ($app) {
             $config = $app->make(ConfigRepository::class);
             $configuration = new Configuration;
 
@@ -88,14 +88,14 @@ class LaravelFattureInCloudPhpSdkServiceProvider extends PackageServiceProvider
             if ($accessToken) {
                 $configuration->setAccessToken($accessToken);
             } else {
-                $tokenStorage = $app->make(TokenStorageInterface::class);
+                $tokenStorage = $app->make(TokenStorageContract::class);
                 $storedToken = $tokenStorage->getAccessToken('default');
                 if ($storedToken) {
                     $configuration->setAccessToken($storedToken);
                 }
             }
 
-            return new ApiServiceFactory(
+            return new FattureInCloudApiServiceFactory(
                 new HttpClient,
                 $configuration,
                 new HeaderSelector
@@ -107,9 +107,9 @@ class LaravelFattureInCloudPhpSdkServiceProvider extends PackageServiceProvider
     {
         $this->app->singleton(LaravelFattureInCloudPhpSdk::class, function ($app) {
             return new LaravelFattureInCloudPhpSdk(
-                $app->make(OAuth2ManagerInterface::class),
-                $app->make(TokenStorageInterface::class),
-                $app->make(ApiServiceFactoryInterface::class)
+                $app->make(OAuth2ManagerContract::class),
+                $app->make(TokenStorageContract::class),
+                $app->make(ApiServiceFactoryContract::class)
             );
         });
 

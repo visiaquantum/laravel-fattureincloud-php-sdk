@@ -2,7 +2,7 @@
 
 namespace Codeman\LaravelFattureInCloudPhpSdk\Contracts;
 
-interface ApiServiceFactoryInterface
+interface ApiServiceFactory
 {
     public function make(string $serviceName): object;
 
