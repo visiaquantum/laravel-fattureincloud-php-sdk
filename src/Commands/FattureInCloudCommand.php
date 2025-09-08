@@ -1,6 +1,6 @@
 <?php
 
-namespace Codeman\LaravelFattureInCloudPhpSdk\Commands;
+namespace Codeman\FattureInCloud\Commands;
 
 use Illuminate\Console\Command;
 

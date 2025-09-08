@@ -1,6 +1,6 @@
 <?php
 
-namespace Codeman\LaravelFattureInCloudPhpSdk\Contracts;
+namespace Codeman\FattureInCloud\Contracts;
 
 interface ApiServiceFactory
 {

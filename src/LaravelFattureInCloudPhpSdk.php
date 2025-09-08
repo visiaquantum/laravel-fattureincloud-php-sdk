@@ -1,10 +1,10 @@
 <?php
 
-namespace Codeman\LaravelFattureInCloudPhpSdk;
+namespace Codeman\FattureInCloud;
 
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\ApiServiceFactory;
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\OAuth2Manager;
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\TokenStorage;
+use Codeman\FattureInCloud\Contracts\ApiServiceFactory;
+use Codeman\FattureInCloud\Contracts\OAuth2Manager;
+use Codeman\FattureInCloud\Contracts\TokenStorage;
 use FattureInCloud\Api\ArchiveApi;
 use FattureInCloud\Api\CashbookApi;
 use FattureInCloud\Api\ClientsApi;

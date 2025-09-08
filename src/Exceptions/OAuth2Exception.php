@@ -1,6 +1,6 @@
 <?php
 
-namespace Codeman\LaravelFattureInCloudPhpSdk\Exceptions;
+namespace Codeman\FattureInCloud\Exceptions;
 
 use Exception;
 use FattureInCloud\OAuth2\OAuth2Error;

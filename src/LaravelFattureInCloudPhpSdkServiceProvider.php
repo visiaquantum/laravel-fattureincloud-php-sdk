@@ -1,16 +1,16 @@
 <?php
 
-namespace Codeman\LaravelFattureInCloudPhpSdk;
+namespace Codeman\FattureInCloud;
 
-use Codeman\LaravelFattureInCloudPhpSdk\Commands\FattureInCloudCommand;
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\ApiServiceFactory as ApiServiceFactoryContract;
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\OAuth2Manager as OAuth2ManagerContract;
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\StateManager as StateManagerContract;
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\TokenStorage as TokenStorageContract;
-use Codeman\LaravelFattureInCloudPhpSdk\Services\CacheTokenStorage;
-use Codeman\LaravelFattureInCloudPhpSdk\Services\FattureInCloudApiServiceFactory;
-use Codeman\LaravelFattureInCloudPhpSdk\Services\OAuth2AuthorizationCodeManager;
-use Codeman\LaravelFattureInCloudPhpSdk\Services\SessionStateManager;
+use Codeman\FattureInCloud\Commands\FattureInCloudCommand;
+use Codeman\FattureInCloud\Contracts\ApiServiceFactory as ApiServiceFactoryContract;
+use Codeman\FattureInCloud\Contracts\OAuth2Manager as OAuth2ManagerContract;
+use Codeman\FattureInCloud\Contracts\StateManager as StateManagerContract;
+use Codeman\FattureInCloud\Contracts\TokenStorage as TokenStorageContract;
+use Codeman\FattureInCloud\Services\CacheTokenStorage;
+use Codeman\FattureInCloud\Services\FattureInCloudApiServiceFactory;
+use Codeman\FattureInCloud\Services\OAuth2AuthorizationCodeManager;
+use Codeman\FattureInCloud\Services\SessionStateManager;
 use FattureInCloud\Configuration;
 use FattureInCloud\HeaderSelector;
 use GuzzleHttp\Client as HttpClient;

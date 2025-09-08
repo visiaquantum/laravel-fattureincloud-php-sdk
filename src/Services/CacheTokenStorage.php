@@ -1,8 +1,8 @@
 <?php
 
-namespace Codeman\LaravelFattureInCloudPhpSdk\Services;
+namespace Codeman\FattureInCloud\Services;
 
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\TokenStorage as TokenStorageContract;
+use Codeman\FattureInCloud\Contracts\TokenStorage as TokenStorageContract;
 use FattureInCloud\OAuth2\OAuth2TokenResponse;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Encryption\Encrypter;

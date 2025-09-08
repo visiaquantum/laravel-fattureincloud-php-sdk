@@ -1,8 +1,8 @@
 <?php
 
-namespace Codeman\LaravelFattureInCloudPhpSdk\Tests;
+namespace Codeman\FattureInCloud\Tests;
 
-use Codeman\LaravelFattureInCloudPhpSdk\LaravelFattureInCloudPhpSdkServiceProvider;
+use Codeman\FattureInCloud\LaravelFattureInCloudPhpSdkServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
 

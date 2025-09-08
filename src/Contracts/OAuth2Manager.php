@@ -1,6 +1,6 @@
 <?php
 
-namespace Codeman\LaravelFattureInCloudPhpSdk\Contracts;
+namespace Codeman\FattureInCloud\Contracts;
 
 use FattureInCloud\OAuth2\OAuth2TokenResponse;
 

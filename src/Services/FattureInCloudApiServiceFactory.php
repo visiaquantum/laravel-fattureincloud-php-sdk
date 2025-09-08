@@ -1,9 +1,9 @@
 <?php
 
-namespace Codeman\LaravelFattureInCloudPhpSdk\Services;
+namespace Codeman\FattureInCloud\Services;
 
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\ApiServiceFactory as ApiServiceFactoryContract;
-use Codeman\LaravelFattureInCloudPhpSdk\Exceptions\UnsupportedServiceException;
+use Codeman\FattureInCloud\Contracts\ApiServiceFactory as ApiServiceFactoryContract;
+use Codeman\FattureInCloud\Exceptions\UnsupportedServiceException;
 use FattureInCloud\Configuration;
 use FattureInCloud\HeaderSelector;
 use GuzzleHttp\Client as HttpClient;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Codeman\LaravelFattureInCloudPhpSdk\Services;
+namespace Codeman\FattureInCloud\Services;
 
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\OAuth2Manager as OAuth2ManagerContract;
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\StateManager as StateManagerContract;
-use Codeman\LaravelFattureInCloudPhpSdk\Exceptions\OAuth2Exception;
+use Codeman\FattureInCloud\Contracts\OAuth2Manager as OAuth2ManagerContract;
+use Codeman\FattureInCloud\Contracts\StateManager as StateManagerContract;
+use Codeman\FattureInCloud\Exceptions\OAuth2Exception;
 use FattureInCloud\OAuth2\OAuth2AuthorizationCode\OAuth2AuthorizationCodeManager as FattureInCloudOAuth2Manager;
 use FattureInCloud\OAuth2\OAuth2Error;
 use FattureInCloud\OAuth2\OAuth2TokenResponse;

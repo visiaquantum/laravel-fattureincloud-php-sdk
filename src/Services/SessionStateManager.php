@@ -1,8 +1,8 @@
 <?php
 
-namespace Codeman\LaravelFattureInCloudPhpSdk\Services;
+namespace Codeman\FattureInCloud\Services;
 
-use Codeman\LaravelFattureInCloudPhpSdk\Contracts\StateManager as StateManagerContract;
+use Codeman\FattureInCloud\Contracts\StateManager as StateManagerContract;
 use Illuminate\Contracts\Session\Session;
 
 class SessionStateManager implements StateManagerContract

@@ -1,5 +1,5 @@
 <?php
 
-namespace Codeman\LaravelFattureInCloudPhpSdk\Exceptions;
+namespace Codeman\FattureInCloud\Exceptions;
 
 class UnsupportedServiceException extends \InvalidArgumentException {}
