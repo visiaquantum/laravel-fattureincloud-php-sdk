@@ -27,8 +27,6 @@ class ApiServiceFactory implements ApiServiceFactoryInterface
         'priceLists' => \FattureInCloud\Api\PriceListsApi::class,
     ];
 
-    private ?string $companyId = null;
-
     public function __construct(
         private HttpClient $httpClient,
         private Configuration $configuration,
@@ -53,13 +51,6 @@ class ApiServiceFactory implements ApiServiceFactoryInterface
     public function supports(string $serviceName): bool
     {
         return isset($this->serviceMapping[$serviceName]);
-    }
-
-    public function setCompanyId(?string $companyId): self
-    {
-        $this->companyId = $companyId;
-
-        return $this;
     }
 
     public function getSupportedServices(): array

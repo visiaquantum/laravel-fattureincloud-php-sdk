@@ -75,7 +75,6 @@ class LaravelFattureInCloudPhpSdk
     public function setCompany(int $companyId): self
     {
         $this->currentCompanyId = (string) $companyId;
-        $this->apiFactory->setCompanyId($this->currentCompanyId);
 
         return $this;
     }
