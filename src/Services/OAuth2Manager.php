@@ -4,6 +4,7 @@ namespace Codeman\LaravelFattureInCloudPhpSdk\Services;
 
 use Codeman\LaravelFattureInCloudPhpSdk\Contracts\OAuth2ManagerInterface;
 use Codeman\LaravelFattureInCloudPhpSdk\Contracts\StateManagerInterface;
+use Codeman\LaravelFattureInCloudPhpSdk\Exceptions\OAuth2Exception;
 use FattureInCloud\OAuth2\OAuth2AuthorizationCode\OAuth2AuthorizationCodeManager;
 use FattureInCloud\OAuth2\OAuth2Error;
 use FattureInCloud\OAuth2\OAuth2TokenResponse;
@@ -50,7 +51,7 @@ class OAuth2Manager implements OAuth2ManagerInterface
         $tokenResponse = $this->oauthManager->fetchToken($code);
 
         if ($tokenResponse instanceof OAuth2Error) {
-            throw new \RuntimeException('OAuth2 error: '.$tokenResponse->getError().' - '.$tokenResponse->getErrorDescription());
+            throw OAuth2Exception::fromOAuth2Error($tokenResponse);
         }
 
         $this->stateManager->clear();
@@ -67,7 +68,7 @@ class OAuth2Manager implements OAuth2ManagerInterface
         $tokenResponse = $this->oauthManager->refreshToken($refreshToken);
 
         if ($tokenResponse instanceof OAuth2Error) {
-            throw new \RuntimeException('OAuth2 refresh error: '.$tokenResponse->getError().' - '.$tokenResponse->getErrorDescription());
+            throw OAuth2Exception::fromOAuth2Error($tokenResponse);
         }
 
         return $tokenResponse;
