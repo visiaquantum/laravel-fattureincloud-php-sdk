@@ -2,7 +2,6 @@
 
 namespace Codeman\FattureInCloud;
 
-use Codeman\FattureInCloud\Commands\FattureInCloudCommand;
 use Codeman\FattureInCloud\Contracts\ApiServiceFactory as ApiServiceFactoryContract;
 use Codeman\FattureInCloud\Contracts\OAuth2Manager as OAuth2ManagerContract;
 use Codeman\FattureInCloud\Contracts\StateManager as StateManagerContract;
