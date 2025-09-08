@@ -91,6 +91,190 @@ The project uses GitHub Actions with three main workflows:
 - **Code Style**: Automatically fixes PHP code style issues using Laravel Pint
 - **Static Analysis**: Runs PHPStan analysis
 
+## Upstream SDK Documentation
+
+This section documents the official Fatture in Cloud PHP SDK (`fattureincloud/fattureincloud-php-sdk`) that our Laravel wrapper depends on.
+
+### Version Information
+- **Current Constraint**: `^2.1` (in composer.json)
+- **Installed Version**: `2.1.3` (from vendor/fattureincloud/fattureincloud-php-sdk/sdk-version.yaml)
+- **OpenAPI Version**: `2.1.5` (from source files)
+- **Generator**: OpenAPI Generator v7.12.0
+- **Base API URL**: `https://api-v2.fattureincloud.it`
+
+### SDK Architecture Overview
+
+The SDK is structured around several core components:
+
+```
+FattureInCloud\
+├── Api\                        # API Service Classes (17 services)
+├── Model\                      # Data Models & Entities (200+ classes)  
+├── OAuth2\                     # OAuth2 Authentication Components
+├── Filter\                     # Query Filter Classes
+├── Configuration.php           # SDK Configuration Management
+├── HeaderSelector.php          # HTTP Header Management
+├── ObjectSerializer.php        # JSON Serialization/Deserialization
+└── ApiException.php           # Exception Handling
+```
+
+### Core Configuration Class
+
+**`FattureInCloud\Configuration`** - Central configuration management
+- **Purpose**: SDK-wide configuration including authentication, HTTP settings
+- **Key Properties**:
+  - `$accessToken`: OAuth2 Bearer token for authentication
+  - `$host`: API base URL (default: https://api-v2.fattureincloud.it)
+  - `$userAgent`: HTTP user agent (FattureInCloud/2.1.3/PHP-SDK)
+  - `$apiKeys[]`: API key storage for different auth schemes
+  - `$debug`: Debug mode toggle
+- **Usage in Wrapper**: Used to configure all API service instances with authentication tokens
+
+### OAuth2 Authentication System
+
+**`FattureInCloud\OAuth2\OAuth2AuthorizationCode\OAuth2AuthorizationCodeManager`** - Authorization Code Flow
+- **Purpose**: Handles OAuth2 Authorization Code flow for secure API access
+- **Key Methods**:
+  - `getAuthorizationUrl(array $scopes, string $state): string` - Generate OAuth2 authorization URL
+  - `getParamsFromUrl(string $url): OAuth2AuthorizationCodeParams` - Parse callback URL parameters  
+  - `fetchToken(string $code): OAuth2TokenResponse|OAuth2Error` - Exchange code for access token
+  - `refreshToken(string $refreshToken): OAuth2TokenResponse|OAuth2Error` - Refresh expired tokens
+- **Constructor**: `($clientId, $clientSecret, $redirectUri, $baseUri?, $httpClient?)`
+- **Usage in Wrapper**: Instantiated by our `OAuth2AuthorizationCodeManager` service
+
+**`FattureInCloud\OAuth2\OAuth2TokenResponse`** - Token Response Model
+- **Properties**: `tokenType`, `accessToken`, `refreshToken`, `expiresIn`
+- **Methods**: `toJson()`, `fromJson(string $json)` for serialization
+- **Usage in Wrapper**: Returned by OAuth2 flows, stored by our token storage system
+
+**`FattureInCloud\OAuth2\OAuth2Error`** - Error Response Model  
+- **Properties**: `code`, `error`, `errorDescription`
+- **Methods**: `toJson()`, `fromJson(string $json)` for serialization
+- **Usage in Wrapper**: Handled by our OAuth2Exception system
+
+### Available API Services
+
+Our Laravel wrapper provides access to 13 core API services through the factory pattern:
+
+| Service Key | API Class | Purpose |
+|-------------|-----------|---------|
+| `clients` | `FattureInCloud\Api\ClientsApi` | Customer/client management |
+| `companies` | `FattureInCloud\Api\CompaniesApi` | Company information & settings |
+| `info` | `FattureInCloud\Api\InfoApi` | System information & metadata |
+| `issuedDocuments` | `FattureInCloud\Api\IssuedDocumentsApi` | Invoices, quotes, orders, etc. |
+| `products` | `FattureInCloud\Api\ProductsApi` | Product catalog management |
+| `receipts` | `FattureInCloud\Api\ReceiptsApi` | Receipt management |
+| `receivedDocuments` | `FattureInCloud\Api\ReceivedDocumentsApi` | Received invoices/documents |
+| `suppliers` | `FattureInCloud\Api\SuppliersApi` | Supplier management |
+| `taxes` | `FattureInCloud\Api\TaxesApi` | Tax rates & settings |
+| `user` | `FattureInCloud\Api\UserApi` | User account information |
+| `settings` | `FattureInCloud\Api\SettingsApi` | Account settings & preferences |
+| `archiveDocuments` | `FattureInCloud\Api\ArchiveApi` | Document archiving |
+| `cashbook` | `FattureInCloud\Api\CashbookApi` | Cash flow & transactions |
+| `priceLists` | `FattureInCloud\Api\PriceListsApi` | Price list management |
+
+**Additional Available Services** (not yet included in wrapper):
+- `FattureInCloud\Api\EmailsApi` - Email management
+- `FattureInCloud\Api\IssuedEInvoicesApi` - Electronic invoice handling  
+- `FattureInCloud\Api\WebhooksApi` - Webhook subscriptions
+
+### OAuth2 Scopes & Permissions
+
+**`FattureInCloud\OAuth2\Scope`** - Available permission scopes (35 total)
+
+**Entity Management:**
+- `ENTITY_CLIENTS_READ/ALL` - Customer registry access
+- `ENTITY_SUPPLIERS_READ/ALL` - Supplier registry access
+- `PRODUCTS_READ/ALL` - Product catalog access
+
+**Document Types (Issued):**
+- `ISSUED_DOCUMENTS_INVOICES_READ/ALL` - Invoices
+- `ISSUED_DOCUMENTS_CREDIT_NOTES_READ/ALL` - Credit notes
+- `ISSUED_DOCUMENTS_RECEIPTS_READ/ALL` - Receipts
+- `ISSUED_DOCUMENTS_ORDERS_READ/ALL` - Orders
+- `ISSUED_DOCUMENTS_QUOTES_READ/ALL` - Quotes
+- `ISSUED_DOCUMENTS_PROFORMAS_READ/ALL` - Proforma invoices
+- `ISSUED_DOCUMENTS_DELIVERY_NOTES_READ/ALL` - Delivery notes
+- `ISSUED_DOCUMENTS_WORK_REPORTS_READ/ALL` - Work reports
+- `ISSUED_DOCUMENTS_SUPPLIER_ORDERS_READ/ALL` - Supplier orders
+- `ISSUED_DOCUMENTS_SELF_INVOICES_READ/ALL` - Self invoices
+
+**Other Modules:**
+- `RECEIVED_DOCUMENTS_READ/ALL` - Received documents
+- `STOCK_READ/ALL` - Stock movements
+- `RECEIPTS_READ/ALL` - Receipt handling
+- `CALENDAR_READ/ALL` - Calendar integration
+- `TAXES_READ/ALL` - Tax management
+- `ARCHIVE_READ/ALL` - Document archiving
+- `EMAILS_READ` - Email access (read-only)
+- `CASHBOOK_READ/ALL` - Cashbook management
+- `SETTINGS_READ/ALL` - Settings configuration
+- `SITUATION_READ` - Company situation (read-only)
+
+### Common Usage Patterns in Our Wrapper
+
+1. **Configuration Setup:**
+   ```php
+   $config = new Configuration();
+   $config->setAccessToken($token);
+   ```
+
+2. **API Service Creation:**
+   ```php
+   $companiesApi = new CompaniesApi($httpClient, $config, $headerSelector);
+   ```
+
+3. **OAuth2 Manager Initialization:**
+   ```php
+   $oauth2Manager = new OAuth2AuthorizationCodeManager(
+       $clientId, $clientSecret, $redirectUri
+   );
+   ```
+
+4. **Token Exchange:**
+   ```php
+   $result = $oauth2Manager->fetchToken($authorizationCode);
+   if ($result instanceof OAuth2TokenResponse) {
+       // Success - use $result->getAccessToken()
+   } else {
+       // Error - handle OAuth2Error
+   }
+   ```
+
+### Model Structure
+
+The SDK includes 200+ model classes in `FattureInCloud\Model\` namespace:
+- **Core Entities**: `Company`, `Client`, `Supplier`, `Product`
+- **Documents**: Various invoice, receipt, and document types
+- **Responses**: API response wrapper classes
+- **Requests**: API request parameter classes
+- **Enums**: Type definitions and constants
+
+### HTTP Layer
+
+- **HTTP Client**: Uses Guzzle HTTP client
+- **Authentication**: Bearer token via Authorization header
+- **Serialization**: Automatic JSON serialization/deserialization
+- **Error Handling**: `FattureInCloud\ApiException` for API errors
+
+### Version Tracking & Updates
+
+To track SDK updates:
+1. **Check Constraint**: Review `composer.json` for version constraint (`^2.1`)
+2. **Verify Installed**: Check `vendor/fattureincloud/fattureincloud-php-sdk/sdk-version.yaml`
+3. **Update Process**: Run `composer update fattureincloud/fattureincloud-php-sdk`
+4. **Breaking Changes**: Monitor SDK releases for API changes
+5. **OpenAPI Spec**: Generated from OpenAPI 2.1.5 specification
+
+### Integration Notes for Wrapper Development
+
+- All API classes follow consistent constructor pattern: `($httpClient, $config, $headerSelector)`
+- OAuth2 managers extend base `OAuth2Manager` class
+- All models implement `ModelInterface`, `ArrayAccess`, and `JsonSerializable`
+- Exception handling through `ApiException` class
+- Consistent method naming and response patterns across all API services
+- Full PSR-7 HTTP message compliance through Guzzle integration
+
 ## Current Functionality
 
 ### OAuth2 Authentication Flows
