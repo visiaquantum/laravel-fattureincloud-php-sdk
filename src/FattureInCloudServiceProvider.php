@@ -21,7 +21,7 @@ use Illuminate\Contracts\Session\Session;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
-class LaravelFattureInCloudPhpSdkServiceProvider extends PackageServiceProvider
+class FattureInCloudServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
@@ -31,11 +31,8 @@ class LaravelFattureInCloudPhpSdkServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('laravel-fattureincloud-php-sdk')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_laravel_fattureincloud_php_sdk_table')
-            ->hasCommand(FattureInCloudCommand::class);
+            ->name('laravel-fatture-in-cloud')
+            ->hasConfigFile();
     }
 
     public function packageRegistered(): void
@@ -105,15 +102,15 @@ class LaravelFattureInCloudPhpSdkServiceProvider extends PackageServiceProvider
 
     private function registerMainService(): void
     {
-        $this->app->singleton(LaravelFattureInCloudPhpSdk::class, function ($app) {
-            return new LaravelFattureInCloudPhpSdk(
+        $this->app->singleton(FattureInCloudSdk::class, function ($app) {
+            return new FattureInCloudSdk(
                 $app->make(OAuth2ManagerContract::class),
                 $app->make(TokenStorageContract::class),
                 $app->make(ApiServiceFactoryContract::class)
             );
         });
 
-        $this->app->alias(LaravelFattureInCloudPhpSdk::class, 'fatture-in-cloud');
+        $this->app->alias(FattureInCloudSdk::class, 'fatture-in-cloud');
     }
 
     private function getRedirectUrl(ConfigRepository $config): string

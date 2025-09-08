@@ -66,7 +66,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Codeman\\FattureInCloud\\LaravelFattureInCloudPhpSdkServiceProvider"
+                "Codeman\\FattureInCloud\\FattureInCloudServiceProvider"
             ],
             "aliases": {
                 "FattureInCloud": "Codeman\\FattureInCloud\\Facades\\FattureInCloud"

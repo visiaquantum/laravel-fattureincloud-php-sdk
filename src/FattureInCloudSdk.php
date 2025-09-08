@@ -21,7 +21,7 @@ use FattureInCloud\Api\TaxesApi;
 use FattureInCloud\Api\UserApi;
 use FattureInCloud\OAuth2\OAuth2TokenResponse;
 
-class LaravelFattureInCloudPhpSdk
+class FattureInCloudSdk
 {
     private ?string $currentCompanyId = null;
 
