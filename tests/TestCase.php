@@ -1,8 +1,8 @@
 <?php
 
-namespace Codeman\LaravelFattureInCloudPhpSdk\Tests;
+namespace Codeman\FattureInCloud\Tests;
 
-use Codeman\LaravelFattureInCloudPhpSdk\LaravelFattureInCloudPhpSdkServiceProvider;
+use Codeman\FattureInCloud\FattureInCloudServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
 
@@ -13,14 +13,14 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Codeman\\LaravelFattureInCloudPhpSdk\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'Codeman\\FattureInCloud\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 
     protected function getPackageProviders($app)
     {
         return [
-            LaravelFattureInCloudPhpSdkServiceProvider::class,
+            FattureInCloudServiceProvider::class,
         ];
     }
 

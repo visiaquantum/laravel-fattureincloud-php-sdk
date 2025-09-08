@@ -1,16 +1,16 @@
 <?php
 
-namespace Codeman\LaravelFattureInCloudPhpSdk\Facades;
+namespace Codeman\FattureInCloud\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Codeman\LaravelFattureInCloudPhpSdk\LaravelFattureInCloudPhpSdk
+ * @see \Codeman\FattureInCloud\FattureInCloudSdk
  */
 class FattureInCloud extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \Codeman\LaravelFattureInCloudPhpSdk\LaravelFattureInCloudPhpSdk::class;
+        return \Codeman\FattureInCloud\FattureInCloudSdk::class;
     }
 }
