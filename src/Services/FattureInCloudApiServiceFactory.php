@@ -22,7 +22,7 @@ class FattureInCloudApiServiceFactory implements ApiServiceFactoryContract
         'taxes' => \FattureInCloud\Api\TaxesApi::class,
         'user' => \FattureInCloud\Api\UserApi::class,
         'settings' => \FattureInCloud\Api\SettingsApi::class,
-        'archiveDocuments' => \FattureInCloud\Api\ArchiveApi::class,
+        'archive' => \FattureInCloud\Api\ArchiveApi::class,
         'cashbook' => \FattureInCloud\Api\CashbookApi::class,
         'priceLists' => \FattureInCloud\Api\PriceListsApi::class,
     ];

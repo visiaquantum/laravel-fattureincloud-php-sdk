@@ -171,11 +171,11 @@ class FattureInCloudSdk
         return $this->apiFactory->make('settings');
     }
 
-    public function archiveDocuments(): ArchiveApi
+    public function archive(): ArchiveApi
     {
         $this->ensureValidToken();
 
-        return $this->apiFactory->make('archiveDocuments');
+        return $this->apiFactory->make('archive');
     }
 
     public function cashbook(): CashbookApi

@@ -134,7 +134,7 @@ FattureInCloud::taxes()             // TaxesApi
 FattureInCloud::priceLists()        // PriceListsApi
 
 // Additional Services
-FattureInCloud::archiveDocuments()  // ArchiveApi
+FattureInCloud::archive()  // ArchiveApi
 FattureInCloud::cashbook()          // CashbookApi
 ```
 

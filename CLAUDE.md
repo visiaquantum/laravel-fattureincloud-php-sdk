@@ -27,16 +27,12 @@ The package follows Laravel ecosystem conventions with a clean, simplified archi
 ### Package Development
 - `composer prepare` - Discover package (runs automatically after autoload dump)
 
-### Artisan Commands
-- `php artisan fatture-in-cloud` - Main package command (renamed from `laravel-fattureincloud-php-sdk`)
-
 ## Architecture
 
 ### Package Structure
 - **Service Provider**: `FattureInCloudServiceProvider` - Main entry point using Spatie's Package Tools
 - **Main Class**: `FattureInCloudSdk` - Core package functionality with OAuth2 integration
 - **Facade**: `FattureInCloud` - Laravel facade for easy access
-- **Command**: `FattureInCloudCommand` - Artisan command for package interaction
 
 ### Clean Architecture Components
 ```
@@ -169,7 +165,7 @@ Our Laravel wrapper provides access to 13 core API services through the factory 
 | `taxes` | `FattureInCloud\Api\TaxesApi` | Tax rates & settings |
 | `user` | `FattureInCloud\Api\UserApi` | User account information |
 | `settings` | `FattureInCloud\Api\SettingsApi` | Account settings & preferences |
-| `archiveDocuments` | `FattureInCloud\Api\ArchiveApi` | Document archiving |
+| `archive` | `FattureInCloud\Api\ArchiveApi` | Document archiving |
 | `cashbook` | `FattureInCloud\Api\CashbookApi` | Cash flow & transactions |
 | `priceLists` | `FattureInCloud\Api\PriceListsApi` | Price list management |
 
