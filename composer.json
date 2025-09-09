@@ -1,5 +1,5 @@
 {
-    "name": "codeman/laravel-fattureincloud-php-sdk",
+    "name": "visiaquantum/laravel-fattureincloud-php-sdk",
     "description": "This package provides a simple, expressive, and robust wrapper around the official Fatture in Cloud PHP SDK. Its primary purpose is to abstract the complexity of the base SDK, offering a Laravel-native developer experience for interacting with the Fatture in Cloud API.",
     "keywords": [
         "Codeman by Visia Quantum srl",

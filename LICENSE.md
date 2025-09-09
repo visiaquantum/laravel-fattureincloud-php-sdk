@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) Codeman by Visia Quantum srl <mattia@codeman.it>
+Copyright (c) Codeman by Visia Quantum srl <info@visiaquantum.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
