@@ -32,6 +32,12 @@ class OAuth2CallbackController extends Controller
             );
         }
 
+        // Process token exchange with consolidated exception handling
+        return $this->processTokenExchange($request);
+    }
+
+    private function processTokenExchange(Request $request): Response
+    {
         try {
             // Exchange authorization code for access token
             $tokenResponse = $this->oauth2Manager->fetchToken(
@@ -43,27 +49,21 @@ class OAuth2CallbackController extends Controller
             $this->storeTokens($tokenResponse);
 
             return $this->createSuccessResponse($tokenResponse);
-        } catch (OAuth2Exception $e) {
-            return $this->createErrorResponse(
-                "OAuth2 error: {$e->getMessage()}",
-                400
-            );
-        } catch (\InvalidArgumentException $e) {
-            return $this->createErrorResponse(
-                "Invalid state parameter: {$e->getMessage()}",
-                400
-            );
-        } catch (\LogicException $e) {
-            return $this->createErrorResponse(
-                "Configuration error: {$e->getMessage()}",
-                500
-            );
         } catch (\Exception $e) {
-            return $this->createErrorResponse(
-                'An unexpected error occurred during token exchange',
-                500
-            );
+            return $this->handleTokenExchangeException($e);
         }
+    }
+
+    private function handleTokenExchangeException(\Exception $e): Response
+    {
+        [$message, $statusCode] = match (true) {
+            $e instanceof OAuth2Exception => ["OAuth2 error: {$e->getMessage()}", 400],
+            $e instanceof \InvalidArgumentException => ["Invalid state parameter: {$e->getMessage()}", 400],
+            $e instanceof \LogicException => ["Configuration error: {$e->getMessage()}", 500],
+            default => ['An unexpected error occurred during token exchange', 500]
+        };
+
+        return $this->createErrorResponse($message, $statusCode);
     }
 
     private function handleOAuth2Error(Request $request): Response
