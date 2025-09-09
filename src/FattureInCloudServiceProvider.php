@@ -68,8 +68,8 @@ class FattureInCloudServiceProvider extends PackageServiceProvider
 
             return new OAuth2AuthorizationCodeManager(
                 $app->make(StateManagerContract::class),
-                $config->get('fattureincloud-php-sdk.client_id'),
-                $config->get('fattureincloud-php-sdk.client_secret'),
+                $config->get('fatture-in-cloud.client_id'),
+                $config->get('fatture-in-cloud.client_secret'),
                 $this->getRedirectUrl($config)
             );
         });
@@ -81,7 +81,7 @@ class FattureInCloudServiceProvider extends PackageServiceProvider
             $config = $app->make(ConfigRepository::class);
             $configuration = new Configuration;
 
-            $accessToken = $config->get('fattureincloud-php-sdk.access_token');
+            $accessToken = $config->get('fatture-in-cloud.access_token');
             if ($accessToken) {
                 $configuration->setAccessToken($accessToken);
             } else {
@@ -115,12 +115,30 @@ class FattureInCloudServiceProvider extends PackageServiceProvider
 
     private function getRedirectUrl(ConfigRepository $config): string
     {
-        $redirectUrl = $config->get('fattureincloud-php-sdk.redirect_url');
-
-        if ($redirectUrl) {
-            return $redirectUrl;
+        // Priority 1: Manual override (highest priority)
+        $manualUrl = $config->get('fatture-in-cloud.redirect_url');
+        if ($manualUrl && $this->isValidUrl($manualUrl)) {
+            return $manualUrl;
         }
 
-        return $config->get('app.url').'/fatture-in-cloud/callback';
+        // Priority 2: Generate from named route (Laravel's standard approach)
+        try {
+            return route('fatture-in-cloud.callback');
+        } catch (\Exception $e) {
+            // Route generation failed - provide helpful guidance
+            throw new \LogicException(
+                'Unable to generate OAuth2 redirect URL. Please ensure either: '.
+                '1) Set FATTUREINCLOUD_REDIRECT_URL manually in your .env file, or '.
+                '2) Ensure APP_URL is configured (required for Laravel\'s route() helper), or '.
+                '3) Verify the callback route "fatture-in-cloud.callback" is properly registered. '.
+                'Route generation error: '.$e->getMessage()
+            );
+        }
+    }
+
+    private function isValidUrl(string $url): bool
+    {
+        return filter_var($url, FILTER_VALIDATE_URL) !== false
+            && (str_starts_with($url, 'http://') || str_starts_with($url, 'https://'));
     }
 }

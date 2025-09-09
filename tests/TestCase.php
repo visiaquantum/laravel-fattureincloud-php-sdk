@@ -37,15 +37,27 @@ class TestCase extends Orchestra
         // Configure session for StateManager
         config()->set('session.driver', 'array');
 
-        // Configure the package with the config key used by the service provider
-        config()->set('fattureincloud-php-sdk.client_id', 'test-client-id');
-        config()->set('fattureincloud-php-sdk.client_secret', 'test-client-secret');
-        config()->set('fattureincloud-php-sdk.redirect_url', 'http://localhost/fatture-in-cloud/callback');
+        // Configure the package with the corrected config keys
+        config()->set('fatture-in-cloud.client_id', 'test-client-id');
+        config()->set('fatture-in-cloud.client_secret', 'test-client-secret');
+        config()->set('fatture-in-cloud.redirect_url', 'http://localhost/fatture-in-cloud/callback');
 
         /*
          foreach (\Illuminate\Support\Facades\File::allFiles(__DIR__ . '/database/migrations') as $migration) {
             (include $migration->getRealPath())->up();
          }
          */
+    }
+
+    /**
+     * Helper method to invoke private methods for testing
+     */
+    protected function invokePrivateMethod($object, $methodName, $parameters = [])
+    {
+        $reflection = new \ReflectionClass($object);
+        $method = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($object, $parameters);
     }
 }
