@@ -39,6 +39,8 @@ The package follows Laravel ecosystem conventions with a clean, simplified archi
 Codeman\FattureInCloud\
 ├── FattureInCloudSdk (main SDK class)
 ├── FattureInCloudServiceProvider (Laravel service provider)
+├── Controllers\ (HTTP controllers)
+│   └── OAuth2CallbackController - OAuth2 authorization callback handler
 ├── Contracts\ (Laravel-convention interfaces without "Interface" suffix)
 │   ├── OAuth2Manager - OAuth2 authentication contract
 │   ├── StateManager - CSRF state management contract
@@ -276,9 +278,19 @@ To track SDK updates:
 ### OAuth2 Authentication Flows
 The package provides complete OAuth2 integration with:
 - **Authorization Code Flow**: Full OAuth2 implementation with state management
+- **OAuth2 Callback Handling**: Automatic processing of authorization callbacks at `/fatture-in-cloud/callback`
 - **Token Management**: Automatic token storage and retrieval using Laravel cache
 - **Session State Management**: CSRF protection using Laravel sessions
 - **Manual Token Authentication**: Direct API access using access tokens
+
+#### OAuth2 Callback Route
+The package automatically registers the callback route `/fatture-in-cloud/callback` (named `fatture-in-cloud.callback`) that:
+- Processes OAuth2 authorization callbacks from Fatture in Cloud
+- Handles both successful authorizations and error responses (access denied, invalid requests, etc.)
+- Validates CSRF state parameters to prevent attacks
+- Exchanges authorization codes for access/refresh tokens
+- Stores tokens securely using Laravel's encrypted cache
+- Returns structured JSON responses for success/error scenarios
 
 ### Service Factory Pattern
 - **API Service Creation**: Factory pattern for creating Fatture in Cloud API services
