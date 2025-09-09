@@ -45,13 +45,22 @@ return [
     /**
      * OAuth2 Redirect URL (Optional Override)
      *
-     * By default, the package will automatically generate the redirect URL using
-     * Laravel's route() helper for the callback route. Only set this if you need
-     * to override the automatically generated URL for specific deployment scenarios.
+     * AUTOMATIC GENERATION: The package automatically generates the redirect URL using
+     * Laravel's route() helper for the named route 'fatture-in-cloud.callback'.
+     * If route generation fails, it falls back to APP_URL + '/fatture-in-cloud/callback'.
+     *
+     * MANUAL OVERRIDE: Only set this environment variable if you need to override
+     * the automatically generated URL for specific deployment scenarios (e.g., load
+     * balancers, CDNs, or custom domain configurations).
      *
      * The URL where users will be redirected after authorizing your application.
      * This must match exactly with the redirect URL configured in your
      * Fatture in Cloud OAuth2 application.
+     *
+     * Examples of when manual override might be needed:
+     * - Behind a reverse proxy: https://api.yourdomain.com/fatture-in-cloud/callback
+     * - Custom subdomain: https://billing.yourdomain.com/fatture-in-cloud/callback
+     * - Different port: https://yourdomain.com:8080/fatture-in-cloud/callback
      *
      * @see https://developers.fattureincloud.it/docs/authentication/oauth2-code-flow
      */

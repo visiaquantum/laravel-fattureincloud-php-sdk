@@ -68,8 +68,8 @@ class FattureInCloudServiceProvider extends PackageServiceProvider
 
             return new OAuth2AuthorizationCodeManager(
                 $app->make(StateManagerContract::class),
-                $config->get('fattureincloud-php-sdk.client_id'),
-                $config->get('fattureincloud-php-sdk.client_secret'),
+                $config->get('fatture-in-cloud.client_id'),
+                $config->get('fatture-in-cloud.client_secret'),
                 $this->getRedirectUrl($config)
             );
         });
@@ -81,7 +81,7 @@ class FattureInCloudServiceProvider extends PackageServiceProvider
             $config = $app->make(ConfigRepository::class);
             $configuration = new Configuration;
 
-            $accessToken = $config->get('fattureincloud-php-sdk.access_token');
+            $accessToken = $config->get('fatture-in-cloud.access_token');
             if ($accessToken) {
                 $configuration->setAccessToken($accessToken);
             } else {
@@ -115,12 +115,40 @@ class FattureInCloudServiceProvider extends PackageServiceProvider
 
     private function getRedirectUrl(ConfigRepository $config): string
     {
-        $redirectUrl = $config->get('fattureincloud-php-sdk.redirect_url');
-
-        if ($redirectUrl) {
-            return $redirectUrl;
+        // Priority 1: Manual override (highest priority)
+        $manualUrl = $config->get('fatture-in-cloud.redirect_url');
+        if ($manualUrl && $this->isValidUrl($manualUrl)) {
+            return $manualUrl;
         }
 
-        return $config->get('app.url').'/fatture-in-cloud/callback';
+        // Priority 2: Generate from named route (preferred method)
+        try {
+            return route('fatture-in-cloud.callback');
+        } catch (\Exception $e) {
+            // Route doesn't exist or URL generation failed
+        }
+
+        // Priority 3: Fallback to app.url construction
+        $appUrl = $config->get('app.url');
+        if ($appUrl) {
+            $fallbackUrl = rtrim($appUrl, '/').'/fatture-in-cloud/callback';
+            if ($this->isValidUrl($fallbackUrl)) {
+                return $fallbackUrl;
+            }
+        }
+
+        // Priority 4: Fail with helpful error
+        throw new \LogicException(
+            'Unable to generate OAuth2 redirect URL. Please ensure either: '.
+            '1) The callback route "fatture-in-cloud.callback" is registered, or '.
+            '2) APP_URL is configured, or '.
+            '3) FATTUREINCLOUD_REDIRECT_URL is set manually.'
+        );
+    }
+
+    private function isValidUrl(string $url): bool
+    {
+        return filter_var($url, FILTER_VALIDATE_URL) !== false
+            && (str_starts_with($url, 'http://') || str_starts_with($url, 'https://'));
     }
 }
