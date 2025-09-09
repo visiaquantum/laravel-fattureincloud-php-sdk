@@ -1,9 +1,9 @@
 # Laravel Fatture in Cloud PHP SDK
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/codeman/laravel-fattureincloud-php-sdk.svg?style=flat-square)](https://packagist.org/packages/codeman/laravel-fattureincloud-php-sdk)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/visiaquantum/laravel-fattureincloud-php-sdk.svg?style=flat-square)](https://packagist.org/packages/visiaquantum/laravel-fattureincloud-php-sdk)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/visiaquantum/laravel-fattureincloud-php-sdk/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/visiaquantum/laravel-fattureincloud-php-sdk/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/visiaquantum/laravel-fattureincloud-php-sdk/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/visiaquantum/laravel-fattureincloud-php-sdk/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/codeman/laravel-fattureincloud-php-sdk.svg?style=flat-square)](https://packagist.org/packages/codeman/laravel-fattureincloud-php-sdk)
+[![Total Downloads](https://img.shields.io/packagist/dt/visiaquantum/laravel-fattureincloud-php-sdk.svg?style=flat-square)](https://packagist.org/packages/visiaquantum/laravel-fattureincloud-php-sdk)
 
 A Laravel package that provides a clean, Laravel-native wrapper around the official [Fatture in Cloud PHP SDK](https://github.com/fattureincloud/fattureincloud-php-sdk). This package abstracts the complexity of the base SDK and offers a simplified, Laravel-integrated developer experience for interacting with the Fatture in Cloud API.
 
@@ -30,7 +30,7 @@ The package follows Laravel ecosystem conventions with a clean, simplified archi
 You can install the package via Composer:
 
 ```bash
-composer require codeman/laravel-fattureincloud-php-sdk
+composer require visiaquantum/laravel-fattureincloud-php-sdk
 ```
 
 Publish the configuration file:
