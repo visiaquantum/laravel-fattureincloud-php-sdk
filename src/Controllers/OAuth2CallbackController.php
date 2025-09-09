@@ -17,7 +17,7 @@ class OAuth2CallbackController extends Controller
         private TokenStorageContract $tokenStorage
     ) {}
 
-    public function handleCallback(Request $request): Response
+    public function __invoke(Request $request): Response
     {
         // Check for OAuth2 error response (user denial or other errors)
         if ($request->has('error')) {

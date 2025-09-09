@@ -78,7 +78,7 @@ return [
 
 ### OAuth2 Callback Route
 
-The package automatically registers the OAuth2 callback route at `/fatture-in-cloud/callback` (named `fatture-in-cloud.callback`). This route:
+The package automatically registers the OAuth2 callback route at `/fatture-in-cloud/callback` (named `fatture-in-cloud.callback`) using a single action invokable controller. This route:
 
 - Processes OAuth2 authorization callbacks from Fatture in Cloud
 - Handles both successful authorizations and error responses
@@ -86,6 +86,8 @@ The package automatically registers the OAuth2 callback route at `/fatture-in-cl
 - Exchanges authorization codes for access/refresh tokens
 - Stores tokens securely using Laravel's encrypted cache
 - Returns structured JSON responses for success/error scenarios
+
+The route is registered as: `Route::get('/fatture-in-cloud/callback', OAuth2CallbackController::class)`
 
 ## Usage
 
@@ -354,7 +356,7 @@ Codeman\FattureInCloud\
 ├── FattureInCloudSdk (main SDK class)
 ├── FattureInCloudServiceProvider (Laravel service provider)
 ├── Controllers\ (HTTP controllers)
-│   └── OAuth2CallbackController - OAuth2 authorization callback handler
+│   └── OAuth2CallbackController - Single action invokable controller for OAuth2 callbacks
 ├── Contracts\ (Laravel-convention interfaces without "Interface" suffix)
 │   ├── OAuth2Manager - OAuth2 authentication contract
 │   ├── StateManager - CSRF state management contract
@@ -378,6 +380,7 @@ Codeman\FattureInCloud\
 - **Dependency Injection**: All dependencies are injected and easily testable
 - **Contract-Based Design**: Interface-driven development for flexibility
 - **Factory Pattern**: Service creation through factory for consistency
+- **Single Action Controllers**: OAuth2 callback controller follows Laravel's invokable controller pattern using `__invoke()`
 - **Encrypted Token Storage**: Secure token persistence using Laravel's encryption
 - **Automatic Route Registration**: OAuth2 callback route registered automatically
 - **Laravel Integration**: Full integration with Laravel's service container and facades

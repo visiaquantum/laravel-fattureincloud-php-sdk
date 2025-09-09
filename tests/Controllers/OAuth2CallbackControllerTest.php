@@ -25,7 +25,7 @@ describe('OAuth2CallbackController', function () {
         Mockery::close();
     });
 
-    describe('handleCallback method', function () {
+    describe('__invoke method', function () {
         describe('when OAuth2 error parameters are present', function () {
             it('handles access_denied error correctly', function () {
                 // Arrange
@@ -35,7 +35,7 @@ describe('OAuth2CallbackController', function () {
                 ]);
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response)->toBeInstanceOf(Response::class);
@@ -56,7 +56,7 @@ describe('OAuth2CallbackController', function () {
                 ]);
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(400);
@@ -73,7 +73,7 @@ describe('OAuth2CallbackController', function () {
                 ]);
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(400);
@@ -88,7 +88,7 @@ describe('OAuth2CallbackController', function () {
                 ]);
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(400);
@@ -103,7 +103,7 @@ describe('OAuth2CallbackController', function () {
                 ]);
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(400);
@@ -118,7 +118,7 @@ describe('OAuth2CallbackController', function () {
                 ]);
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(400);
@@ -133,7 +133,7 @@ describe('OAuth2CallbackController', function () {
                 ]);
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(400);
@@ -149,7 +149,7 @@ describe('OAuth2CallbackController', function () {
                 ]);
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(400);
@@ -165,7 +165,7 @@ describe('OAuth2CallbackController', function () {
                 ]);
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(400);
@@ -182,7 +182,7 @@ describe('OAuth2CallbackController', function () {
                 ]);
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(400);
@@ -198,7 +198,7 @@ describe('OAuth2CallbackController', function () {
                 ]);
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(400);
@@ -212,7 +212,7 @@ describe('OAuth2CallbackController', function () {
                 $request = Request::create('/callback', 'GET');
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(400);
@@ -249,7 +249,7 @@ describe('OAuth2CallbackController', function () {
                     ->with('default', $tokenResponse);
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(200);
@@ -287,7 +287,7 @@ describe('OAuth2CallbackController', function () {
                     ->with('default', $tokenResponse);
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(200);
@@ -314,7 +314,7 @@ describe('OAuth2CallbackController', function () {
                     ->andThrow($oauth2Exception);
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(400);
@@ -338,7 +338,7 @@ describe('OAuth2CallbackController', function () {
                     ->andThrow($invalidArgumentException);
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(400);
@@ -362,7 +362,7 @@ describe('OAuth2CallbackController', function () {
                     ->andThrow($logicException);
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(500);
@@ -386,7 +386,7 @@ describe('OAuth2CallbackController', function () {
                     ->andThrow($genericException);
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(500);
@@ -423,7 +423,7 @@ describe('OAuth2CallbackController', function () {
                     ->andThrow(new \RuntimeException('Cache connection failed'));
 
                 // Act
-                $response = $this->controller->handleCallback($request);
+                $response = $this->controller->__invoke($request);
 
                 // Assert
                 expect($response->getStatusCode())->toBe(500);
@@ -531,7 +531,7 @@ describe('OAuth2CallbackController', function () {
             $this->tokenStorage->shouldReceive('store')->once();
 
             // Act
-            $response = $this->controller->handleCallback($request);
+            $response = $this->controller->__invoke($request);
 
             // Assert
             expect($response->headers->get('Content-Type'))->toBe('application/json');
@@ -549,7 +549,7 @@ describe('OAuth2CallbackController', function () {
             ]);
 
             // Act
-            $response = $this->controller->handleCallback($request);
+            $response = $this->controller->__invoke($request);
 
             // Assert
             expect($response->headers->get('Content-Type'))->toBe('application/json');
