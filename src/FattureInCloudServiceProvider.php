@@ -121,29 +121,19 @@ class FattureInCloudServiceProvider extends PackageServiceProvider
             return $manualUrl;
         }
 
-        // Priority 2: Generate from named route (preferred method)
+        // Priority 2: Generate from named route (Laravel's standard approach)
         try {
             return route('fatture-in-cloud.callback');
         } catch (\Exception $e) {
-            // Route doesn't exist or URL generation failed
+            // Route generation failed - provide helpful guidance
+            throw new \LogicException(
+                'Unable to generate OAuth2 redirect URL. Please ensure either: '.
+                '1) Set FATTUREINCLOUD_REDIRECT_URL manually in your .env file, or '.
+                '2) Ensure APP_URL is configured (required for Laravel\'s route() helper), or '.
+                '3) Verify the callback route "fatture-in-cloud.callback" is properly registered. '.
+                'Route generation error: '.$e->getMessage()
+            );
         }
-
-        // Priority 3: Fallback to app.url construction
-        $appUrl = $config->get('app.url');
-        if ($appUrl) {
-            $fallbackUrl = rtrim($appUrl, '/').'/fatture-in-cloud/callback';
-            if ($this->isValidUrl($fallbackUrl)) {
-                return $fallbackUrl;
-            }
-        }
-
-        // Priority 4: Fail with helpful error
-        throw new \LogicException(
-            'Unable to generate OAuth2 redirect URL. Please ensure either: '.
-            '1) The callback route "fatture-in-cloud.callback" is registered, or '.
-            '2) APP_URL is configured, or '.
-            '3) FATTUREINCLOUD_REDIRECT_URL is set manually.'
-        );
     }
 
     private function isValidUrl(string $url): bool

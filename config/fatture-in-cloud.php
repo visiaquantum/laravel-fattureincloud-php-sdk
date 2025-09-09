@@ -47,7 +47,7 @@ return [
      *
      * AUTOMATIC GENERATION: The package automatically generates the redirect URL using
      * Laravel's route() helper for the named route 'fatture-in-cloud.callback'.
-     * If route generation fails, it falls back to APP_URL + '/fatture-in-cloud/callback'.
+     * Laravel's route() helper uses your APP_URL configuration internally.
      *
      * MANUAL OVERRIDE: Only set this environment variable if you need to override
      * the automatically generated URL for specific deployment scenarios (e.g., load
@@ -61,6 +61,11 @@ return [
      * - Behind a reverse proxy: https://api.yourdomain.com/fatture-in-cloud/callback
      * - Custom subdomain: https://billing.yourdomain.com/fatture-in-cloud/callback
      * - Different port: https://yourdomain.com:8080/fatture-in-cloud/callback
+     * - Load balancer scenarios with different external/internal URLs
+     *
+     * SETUP REQUIREMENTS for automatic generation:
+     * - Ensure APP_URL is configured in your .env file
+     * - The callback route is automatically registered by this package
      *
      * @see https://developers.fattureincloud.it/docs/authentication/oauth2-code-flow
      */
