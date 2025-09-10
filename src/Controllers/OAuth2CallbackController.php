@@ -4,7 +4,6 @@ namespace Codeman\FattureInCloud\Controllers;
 
 use Codeman\FattureInCloud\Contracts\OAuth2Manager as OAuth2ManagerContract;
 use Codeman\FattureInCloud\Contracts\TokenStorage as TokenStorageContract;
-use Codeman\FattureInCloud\Exceptions\OAuth2Exception;
 use Codeman\FattureInCloud\Exceptions\OAuth2ExceptionFactory;
 use Codeman\FattureInCloud\Services\OAuth2ErrorHandler;
 use FattureInCloud\OAuth2\OAuth2TokenResponse;

@@ -99,6 +99,7 @@ abstract class OAuth2Exception extends Exception
 
     /**
      * Create OAuth2 exception from OAuth2Error response
+     *
      * @deprecated Use OAuth2ExceptionFactory::fromOAuth2Error() instead
      */
     public static function fromOAuth2Error(OAuth2Error $oauth2Error): AuthorizationException|TokenExchangeException|TokenRefreshException|ConfigurationException

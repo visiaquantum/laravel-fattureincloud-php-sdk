@@ -14,7 +14,7 @@ class OAuth2ExceptionFactory
     public static function fromOAuth2Error(OAuth2Error $oauth2Error): AuthorizationException|TokenExchangeException|TokenRefreshException|ConfigurationException
     {
         $error = $oauth2Error->getError();
-        
+
         return match ($error) {
             // Authorization errors
             OAuth2Exception::ACCESS_DENIED => AuthorizationException::accessDenied($oauth2Error->getErrorDescription()),
@@ -24,22 +24,22 @@ class OAuth2ExceptionFactory
             'invalid_scope' => AuthorizationException::invalidScope($oauth2Error->getErrorDescription()),
             OAuth2Exception::SERVER_ERROR => AuthorizationException::serverError($oauth2Error->getErrorDescription()),
             OAuth2Exception::TEMPORARILY_UNAVAILABLE => AuthorizationException::temporarilyUnavailable($oauth2Error->getErrorDescription()),
-            
+
             // Token exchange errors
             'invalid_code' => TokenExchangeException::invalidCode($oauth2Error->getErrorDescription()),
             'invalid_client_credentials' => TokenExchangeException::invalidClientCredentials($oauth2Error->getErrorDescription()),
             'network_failure' => TokenExchangeException::networkFailure($oauth2Error->getErrorDescription()),
-            
+
             // Token refresh errors
             'invalid_refresh_token' => TokenRefreshException::invalidRefreshToken($oauth2Error->getErrorDescription()),
             'client_authentication_failed' => TokenRefreshException::clientAuthenticationFailed($oauth2Error->getErrorDescription()),
             'token_revoked' => TokenRefreshException::tokenRevoked($oauth2Error->getErrorDescription()),
-            
+
             // Configuration errors
             'missing_configuration' => ConfigurationException::missingConfiguration('unknown_config', $oauth2Error->getErrorDescription()),
             'invalid_redirect_url' => ConfigurationException::invalidRedirectUrl(null, $oauth2Error->getErrorDescription()),
             'malformed_configuration' => ConfigurationException::malformedConfiguration($oauth2Error->getErrorDescription()),
-            
+
             // Default to authorization error for unknown errors
             default => AuthorizationException::invalidRequest("Unknown OAuth2 error: {$error}. {$oauth2Error->getErrorDescription()}"),
         };
