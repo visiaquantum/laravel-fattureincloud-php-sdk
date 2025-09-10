@@ -1,5 +1,6 @@
 <?php
 
+use Codeman\FattureInCloud\Exceptions\AuthorizationException;
 use Codeman\FattureInCloud\Exceptions\OAuth2ErrorCategory;
 use Codeman\FattureInCloud\Exceptions\OAuth2Exception;
 use Codeman\FattureInCloud\Services\OAuth2ErrorHandler;
@@ -93,20 +94,11 @@ describe('OAuth2 Error Handling', function () {
 
     describe('Error Logging Context', function () {
         test('sanitizes sensitive data from logging context', function () {
-            $exception = new OAuth2Exception(
-                'Test error',
-                400,
-                null,
-                'test_error',
-                'Test description',
-                OAuth2ErrorCategory::AUTHORIZATION,
-                false,
-                [
-                    'client_secret' => 'secret123',
-                    'access_token' => 'token123',
-                    'safe_data' => 'this_is_safe',
-                ]
-            );
+            $exception = AuthorizationException::invalidRequest('Test description', [
+                'client_secret' => 'secret123',
+                'access_token' => 'token123',
+                'safe_data' => 'this_is_safe',
+            ]);
 
             $context = $exception->getLoggingContext();
 

@@ -131,14 +131,11 @@ class OAuth2AuthorizationCodeManager implements OAuth2ManagerContract
                 ]);
 
                 // Map OAuth2Error to specific refresh token exceptions
-                $exception = match ($tokenResponse->getError()) {
+                throw match ($tokenResponse->getError()) {
                     'invalid_grant' => OAuth2Exception::invalidRefreshToken($tokenResponse->getErrorDescription()),
-                    'invalid_client' => OAuth2Exception::clientAuthenticationFailed($tokenResponse->getErrorDescription()),
-                    'unauthorized_client' => OAuth2Exception::clientAuthenticationFailed($tokenResponse->getErrorDescription()),
+                    'invalid_client', 'unauthorized_client' => OAuth2Exception::clientAuthenticationFailed($tokenResponse->getErrorDescription()),
                     default => OAuth2Exception::fromOAuth2Error($tokenResponse),
                 };
-
-                throw $exception;
             }
 
             Log::info('OAuth2 token refresh completed successfully', [

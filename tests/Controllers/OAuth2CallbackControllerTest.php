@@ -3,7 +3,7 @@
 use Codeman\FattureInCloud\Contracts\OAuth2Manager as OAuth2ManagerContract;
 use Codeman\FattureInCloud\Contracts\TokenStorage as TokenStorageContract;
 use Codeman\FattureInCloud\Controllers\OAuth2CallbackController;
-use Codeman\FattureInCloud\Exceptions\OAuth2Exception;
+use Codeman\FattureInCloud\Exceptions\TokenExchangeException;
 use Codeman\FattureInCloud\Services\OAuth2ErrorHandler;
 use FattureInCloud\OAuth2\OAuth2TokenResponse;
 use Illuminate\Http\Request;
@@ -465,7 +465,7 @@ describe('OAuth2CallbackController', function () {
                     'state' => 'csrf-state',
                 ]);
 
-                $oauth2Exception = new OAuth2Exception('Invalid authorization code');
+                $oauth2Exception = TokenExchangeException::invalidCode('Invalid authorization code');
 
                 $expectedResponse = new Response(json_encode([
                     'status' => 'error',

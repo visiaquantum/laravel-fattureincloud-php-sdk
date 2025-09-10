@@ -2,6 +2,7 @@
 
 namespace Codeman\FattureInCloud\Services;
 
+use Codeman\FattureInCloud\Exceptions\AuthorizationException;
 use Codeman\FattureInCloud\Exceptions\OAuth2ErrorCategory;
 use Codeman\FattureInCloud\Exceptions\OAuth2Exception;
 use Exception;
@@ -18,13 +19,13 @@ class OAuth2ErrorHandler
         $errorDescription = $request->get('error_description', 'No description provided');
 
         $exception = match ($error) {
-            OAuth2Exception::ACCESS_DENIED => OAuth2Exception::accessDenied($errorDescription),
-            OAuth2Exception::INVALID_REQUEST => OAuth2Exception::invalidRequest($errorDescription),
-            OAuth2Exception::UNAUTHORIZED_CLIENT => OAuth2Exception::unauthorizedClient($errorDescription),
-            OAuth2Exception::UNSUPPORTED_RESPONSE_TYPE => OAuth2Exception::unsupportedResponseType($errorDescription),
-            OAuth2Exception::INVALID_SCOPE => OAuth2Exception::invalidScope($errorDescription),
-            OAuth2Exception::SERVER_ERROR => OAuth2Exception::serverError($errorDescription),
-            OAuth2Exception::TEMPORARILY_UNAVAILABLE => OAuth2Exception::temporarilyUnavailable($errorDescription),
+            AuthorizationException::ACCESS_DENIED => OAuth2Exception::accessDenied($errorDescription),
+            AuthorizationException::INVALID_REQUEST => OAuth2Exception::invalidRequest($errorDescription),
+            AuthorizationException::UNAUTHORIZED_CLIENT => OAuth2Exception::unauthorizedClient($errorDescription),
+            AuthorizationException::UNSUPPORTED_RESPONSE_TYPE => OAuth2Exception::unsupportedResponseType($errorDescription),
+            AuthorizationException::INVALID_SCOPE => OAuth2Exception::invalidScope($errorDescription),
+            AuthorizationException::SERVER_ERROR => OAuth2Exception::serverError($errorDescription),
+            AuthorizationException::TEMPORARILY_UNAVAILABLE => OAuth2Exception::temporarilyUnavailable($errorDescription),
             default => OAuth2Exception::invalidRequest("Unknown OAuth2 error: {$error}. {$errorDescription}"),
         };
 
