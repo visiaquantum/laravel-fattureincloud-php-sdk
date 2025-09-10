@@ -9,6 +9,7 @@ This is a Laravel package that provides a wrapper around the official Fatture in
 The package follows Laravel ecosystem conventions with a clean, simplified architecture that provides OAuth2 authentication flows, token management, and service abstraction for seamless API integration.
 
 - GitHub repository URL is https://github.com/visiaquantum/laravel-fattureincloud-php-sdk. owner: "visiaquantum", repo: "laravel-fattureincloud-php-sdk"
+- SonarQube project ID: visiaquantum_laravel-fattureincloud-php-sdk_3870c00b-027f-4c79-9b42-bbb4fce78f5f
 
 ## Development Commands
 
