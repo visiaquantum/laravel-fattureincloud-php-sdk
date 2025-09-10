@@ -37,6 +37,16 @@ describe('OAuth2CallbackController', function () {
                     'error_description' => 'User denied authorization',
                 ]);
 
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'error',
+                    'message' => 'Authorization was denied by the user: User denied authorization',
+                ]), 400, ['Content-Type' => 'application/json']);
+
+                $this->errorHandler->shouldReceive('handleCallbackError')
+                    ->once()
+                    ->with($request)
+                    ->andReturn($expectedResponse);
+
                 // Act
                 $response = $this->controller->__invoke($request);
 
@@ -58,6 +68,16 @@ describe('OAuth2CallbackController', function () {
                     'error_description' => 'Missing required parameter',
                 ]);
 
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'error',
+                    'message' => 'The request is missing a required parameter: Missing required parameter',
+                ]), 400, ['Content-Type' => 'application/json']);
+
+                $this->errorHandler->shouldReceive('handleCallbackError')
+                    ->once()
+                    ->with($request)
+                    ->andReturn($expectedResponse);
+
                 // Act
                 $response = $this->controller->__invoke($request);
 
@@ -75,6 +95,16 @@ describe('OAuth2CallbackController', function () {
                     'error' => 'unauthorized_client',
                 ]);
 
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'error',
+                    'message' => 'The client is not authorized: No description provided',
+                ]), 400, ['Content-Type' => 'application/json']);
+
+                $this->errorHandler->shouldReceive('handleCallbackError')
+                    ->once()
+                    ->with($request)
+                    ->andReturn($expectedResponse);
+
                 // Act
                 $response = $this->controller->__invoke($request);
 
@@ -89,6 +119,16 @@ describe('OAuth2CallbackController', function () {
                 $request = Request::create('/callback', 'GET', [
                     'error' => 'unsupported_response_type',
                 ]);
+
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'error',
+                    'message' => 'The authorization server does not support: No description provided',
+                ]), 400, ['Content-Type' => 'application/json']);
+
+                $this->errorHandler->shouldReceive('handleCallbackError')
+                    ->once()
+                    ->with($request)
+                    ->andReturn($expectedResponse);
 
                 // Act
                 $response = $this->controller->__invoke($request);
@@ -105,6 +145,16 @@ describe('OAuth2CallbackController', function () {
                     'error' => 'invalid_scope',
                 ]);
 
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'error',
+                    'message' => 'The requested scope is invalid: No description provided',
+                ]), 400, ['Content-Type' => 'application/json']);
+
+                $this->errorHandler->shouldReceive('handleCallbackError')
+                    ->once()
+                    ->with($request)
+                    ->andReturn($expectedResponse);
+
                 // Act
                 $response = $this->controller->__invoke($request);
 
@@ -120,6 +170,16 @@ describe('OAuth2CallbackController', function () {
                     'error' => 'server_error',
                 ]);
 
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'error',
+                    'message' => 'The authorization server encountered: No description provided',
+                ]), 400, ['Content-Type' => 'application/json']);
+
+                $this->errorHandler->shouldReceive('handleCallbackError')
+                    ->once()
+                    ->with($request)
+                    ->andReturn($expectedResponse);
+
                 // Act
                 $response = $this->controller->__invoke($request);
 
@@ -134,6 +194,16 @@ describe('OAuth2CallbackController', function () {
                 $request = Request::create('/callback', 'GET', [
                     'error' => 'temporarily_unavailable',
                 ]);
+
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'error',
+                    'message' => 'temporarily overloaded: No description provided',
+                ]), 400, ['Content-Type' => 'application/json']);
+
+                $this->errorHandler->shouldReceive('handleCallbackError')
+                    ->once()
+                    ->with($request)
+                    ->andReturn($expectedResponse);
 
                 // Act
                 $response = $this->controller->__invoke($request);
@@ -151,6 +221,16 @@ describe('OAuth2CallbackController', function () {
                     'error_description' => 'Something went wrong',
                 ]);
 
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'error',
+                    'message' => 'Unknown OAuth2 error: unknown_error. Something went wrong',
+                ]), 400, ['Content-Type' => 'application/json']);
+
+                $this->errorHandler->shouldReceive('handleCallbackError')
+                    ->once()
+                    ->with($request)
+                    ->andReturn($expectedResponse);
+
                 // Act
                 $response = $this->controller->__invoke($request);
 
@@ -166,6 +246,16 @@ describe('OAuth2CallbackController', function () {
                 $request = Request::create('/callback', 'GET', [
                     'error' => 'access_denied',
                 ]);
+
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'error',
+                    'message' => 'Authorization was denied by the user: No description provided',
+                ]), 400, ['Content-Type' => 'application/json']);
+
+                $this->errorHandler->shouldReceive('handleCallbackError')
+                    ->once()
+                    ->with($request)
+                    ->andReturn($expectedResponse);
 
                 // Act
                 $response = $this->controller->__invoke($request);
@@ -184,6 +274,15 @@ describe('OAuth2CallbackController', function () {
                     'state' => 'valid-state',
                 ]);
 
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'error',
+                    'message' => 'Missing required parameters: code and state are required',
+                ]), 400, ['Content-Type' => 'application/json']);
+
+                $this->errorHandler->shouldReceive('createErrorResponse')
+                    ->once()
+                    ->andReturn($expectedResponse);
+
                 // Act
                 $response = $this->controller->__invoke($request);
 
@@ -200,6 +299,15 @@ describe('OAuth2CallbackController', function () {
                     'code' => 'auth-code',
                 ]);
 
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'error',
+                    'message' => 'Missing required parameters: code and state are required',
+                ]), 400, ['Content-Type' => 'application/json']);
+
+                $this->errorHandler->shouldReceive('createErrorResponse')
+                    ->once()
+                    ->andReturn($expectedResponse);
+
                 // Act
                 $response = $this->controller->__invoke($request);
 
@@ -213,6 +321,15 @@ describe('OAuth2CallbackController', function () {
             it('returns error when both code and state parameters are missing', function () {
                 // Arrange
                 $request = Request::create('/callback', 'GET');
+
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'error',
+                    'message' => 'Missing required parameters: code and state are required',
+                ]), 400, ['Content-Type' => 'application/json']);
+
+                $this->errorHandler->shouldReceive('createErrorResponse')
+                    ->once()
+                    ->andReturn($expectedResponse);
 
                 // Act
                 $response = $this->controller->__invoke($request);
@@ -240,6 +357,16 @@ describe('OAuth2CallbackController', function () {
                     3600
                 );
 
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'success',
+                    'message' => 'OAuth2 authorization completed successfully',
+                    'data' => [
+                        'token_type' => 'Bearer',
+                        'expires_in' => 3600,
+                        'has_refresh_token' => true,
+                    ],
+                ]), 200, ['Content-Type' => 'application/json']);
+
                 // Mock OAuth2Manager to return successful token response
                 $this->oauth2Manager->shouldReceive('fetchToken')
                     ->once()
@@ -250,6 +377,16 @@ describe('OAuth2CallbackController', function () {
                 $this->tokenStorage->shouldReceive('store')
                     ->once()
                     ->with('default', $tokenResponse);
+
+                // Mock errorHandler to create success response
+                $this->errorHandler->shouldReceive('createSuccessResponse')
+                    ->once()
+                    ->with([
+                        'token_type' => 'Bearer',
+                        'expires_in' => 3600,
+                        'has_refresh_token' => true,
+                    ], 'OAuth2 authorization completed successfully')
+                    ->andReturn($expectedResponse);
 
                 // Act
                 $response = $this->controller->__invoke($request);
@@ -280,6 +417,16 @@ describe('OAuth2CallbackController', function () {
                     7200
                 );
 
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'success',
+                    'message' => 'OAuth2 authorization completed successfully',
+                    'data' => [
+                        'token_type' => 'Bearer',
+                        'expires_in' => 7200,
+                        'has_refresh_token' => false,
+                    ],
+                ]), 200, ['Content-Type' => 'application/json']);
+
                 $this->oauth2Manager->shouldReceive('fetchToken')
                     ->once()
                     ->with('auth-code', 'csrf-state')
@@ -288,6 +435,15 @@ describe('OAuth2CallbackController', function () {
                 $this->tokenStorage->shouldReceive('store')
                     ->once()
                     ->with('default', $tokenResponse);
+
+                $this->errorHandler->shouldReceive('createSuccessResponse')
+                    ->once()
+                    ->with([
+                        'token_type' => 'Bearer',
+                        'expires_in' => 7200,
+                        'has_refresh_token' => false,
+                    ], 'OAuth2 authorization completed successfully')
+                    ->andReturn($expectedResponse);
 
                 // Act
                 $response = $this->controller->__invoke($request);
@@ -311,10 +467,20 @@ describe('OAuth2CallbackController', function () {
 
                 $oauth2Exception = new OAuth2Exception('Invalid authorization code');
 
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'error',
+                    'message' => 'OAuth2 error: Invalid authorization code',
+                ]), 400, ['Content-Type' => 'application/json']);
+
                 $this->oauth2Manager->shouldReceive('fetchToken')
                     ->once()
                     ->with('invalid-code', 'csrf-state')
                     ->andThrow($oauth2Exception);
+
+                $this->errorHandler->shouldReceive('handleException')
+                    ->once()
+                    ->with($oauth2Exception)
+                    ->andReturn($expectedResponse);
 
                 // Act
                 $response = $this->controller->__invoke($request);
@@ -335,10 +501,20 @@ describe('OAuth2CallbackController', function () {
 
                 $invalidArgumentException = new \InvalidArgumentException('State parameter is invalid or expired');
 
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'error',
+                    'message' => 'Invalid state parameter: State parameter is invalid or expired',
+                ]), 400, ['Content-Type' => 'application/json']);
+
                 $this->oauth2Manager->shouldReceive('fetchToken')
                     ->once()
                     ->with('auth-code', 'invalid-state')
                     ->andThrow($invalidArgumentException);
+
+                $this->errorHandler->shouldReceive('handleException')
+                    ->once()
+                    ->with($invalidArgumentException)
+                    ->andReturn($expectedResponse);
 
                 // Act
                 $response = $this->controller->__invoke($request);
@@ -359,10 +535,20 @@ describe('OAuth2CallbackController', function () {
 
                 $logicException = new \LogicException('OAuth2 client not properly configured');
 
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'error',
+                    'message' => 'Configuration error: OAuth2 client not properly configured',
+                ]), 500, ['Content-Type' => 'application/json']);
+
                 $this->oauth2Manager->shouldReceive('fetchToken')
                     ->once()
                     ->with('auth-code', 'csrf-state')
                     ->andThrow($logicException);
+
+                $this->errorHandler->shouldReceive('handleException')
+                    ->once()
+                    ->with($logicException)
+                    ->andReturn($expectedResponse);
 
                 // Act
                 $response = $this->controller->__invoke($request);
@@ -383,10 +569,20 @@ describe('OAuth2CallbackController', function () {
 
                 $genericException = new \RuntimeException('Network timeout');
 
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'error',
+                    'message' => 'An unexpected error occurred during token exchange',
+                ]), 500, ['Content-Type' => 'application/json']);
+
                 $this->oauth2Manager->shouldReceive('fetchToken')
                     ->once()
                     ->with('auth-code', 'csrf-state')
                     ->andThrow($genericException);
+
+                $this->errorHandler->shouldReceive('handleException')
+                    ->once()
+                    ->with($genericException)
+                    ->andReturn($expectedResponse);
 
                 // Act
                 $response = $this->controller->__invoke($request);
@@ -414,6 +610,13 @@ describe('OAuth2CallbackController', function () {
                     3600
                 );
 
+                $storageException = new \RuntimeException('Cache connection failed');
+
+                $expectedResponse = new Response(json_encode([
+                    'status' => 'error',
+                    'message' => 'An unexpected error occurred during token exchange',
+                ]), 500, ['Content-Type' => 'application/json']);
+
                 $this->oauth2Manager->shouldReceive('fetchToken')
                     ->once()
                     ->with('auth-code', 'csrf-state')
@@ -423,7 +626,12 @@ describe('OAuth2CallbackController', function () {
                 $this->tokenStorage->shouldReceive('store')
                     ->once()
                     ->with('default', $tokenResponse)
-                    ->andThrow(new \RuntimeException('Cache connection failed'));
+                    ->andThrow($storageException);
+
+                $this->errorHandler->shouldReceive('handleException')
+                    ->once()
+                    ->with($storageException)
+                    ->andReturn($expectedResponse);
 
                 // Act
                 $response = $this->controller->__invoke($request);
@@ -451,9 +659,10 @@ describe('OAuth2CallbackController', function () {
         });
 
         it('handles OAuth2 callback route with valid parameters', function () {
-            // Arrange - Mock the OAuth2Manager and TokenStorage in the container
+            // Arrange - Mock the OAuth2Manager, TokenStorage, and ErrorHandler in the container
             $this->app->instance(OAuth2ManagerContract::class, $this->oauth2Manager);
             $this->app->instance(TokenStorageContract::class, $this->tokenStorage);
+            $this->app->instance(OAuth2ErrorHandler::class, $this->errorHandler);
 
             $tokenResponse = new OAuth2TokenResponse(
                 'Bearer',
@@ -461,6 +670,16 @@ describe('OAuth2CallbackController', function () {
                 'refresh-token-456',
                 3600
             );
+
+            $expectedResponse = new Response(json_encode([
+                'status' => 'success',
+                'message' => 'OAuth2 authorization completed successfully',
+                'data' => [
+                    'token_type' => 'Bearer',
+                    'expires_in' => 3600,
+                    'has_refresh_token' => true,
+                ],
+            ]), 200, ['Content-Type' => 'application/json']);
 
             $this->oauth2Manager->shouldReceive('fetchToken')
                 ->once()
@@ -470,6 +689,15 @@ describe('OAuth2CallbackController', function () {
             $this->tokenStorage->shouldReceive('store')
                 ->once()
                 ->with('default', $tokenResponse);
+
+            $this->errorHandler->shouldReceive('createSuccessResponse')
+                ->once()
+                ->with([
+                    'token_type' => 'Bearer',
+                    'expires_in' => 3600,
+                    'has_refresh_token' => true,
+                ], 'OAuth2 authorization completed successfully')
+                ->andReturn($expectedResponse);
 
             // Act & Assert
             $response = $this->get('/fatture-in-cloud/callback?code=auth-code&state=csrf-state');
@@ -487,6 +715,18 @@ describe('OAuth2CallbackController', function () {
         });
 
         it('handles OAuth2 callback route with error parameters', function () {
+            // Arrange - Mock the ErrorHandler in the container
+            $this->app->instance(OAuth2ErrorHandler::class, $this->errorHandler);
+
+            $expectedResponse = new Response(json_encode([
+                'status' => 'error',
+                'message' => 'Authorization was denied by the user: User denied',
+            ]), 400, ['Content-Type' => 'application/json']);
+
+            $this->errorHandler->shouldReceive('handleCallbackError')
+                ->once()
+                ->andReturn($expectedResponse);
+
             // Act & Assert
             $response = $this->get('/fatture-in-cloud/callback?error=access_denied&error_description=User denied');
 
@@ -501,6 +741,18 @@ describe('OAuth2CallbackController', function () {
         });
 
         it('handles OAuth2 callback route with missing parameters', function () {
+            // Arrange - Mock the ErrorHandler in the container
+            $this->app->instance(OAuth2ErrorHandler::class, $this->errorHandler);
+
+            $expectedResponse = new Response(json_encode([
+                'status' => 'error',
+                'message' => 'Missing required parameters: code and state are required',
+            ]), 400, ['Content-Type' => 'application/json']);
+
+            $this->errorHandler->shouldReceive('createErrorResponse')
+                ->once()
+                ->andReturn($expectedResponse);
+
             // Act & Assert
             $response = $this->get('/fatture-in-cloud/callback');
 
@@ -527,11 +779,25 @@ describe('OAuth2CallbackController', function () {
                 3600
             );
 
+            $expectedResponse = new Response(json_encode([
+                'status' => 'success',
+                'message' => 'OAuth2 authorization completed successfully',
+                'data' => [
+                    'token_type' => 'Bearer',
+                    'expires_in' => 3600,
+                    'has_refresh_token' => true,
+                ],
+            ]), 200, ['Content-Type' => 'application/json']);
+
             $this->oauth2Manager->shouldReceive('fetchToken')
                 ->once()
                 ->andReturn($tokenResponse);
 
             $this->tokenStorage->shouldReceive('store')->once();
+
+            $this->errorHandler->shouldReceive('createSuccessResponse')
+                ->once()
+                ->andReturn($expectedResponse);
 
             // Act
             $response = $this->controller->__invoke($request);
@@ -550,6 +816,16 @@ describe('OAuth2CallbackController', function () {
             $request = Request::create('/callback', 'GET', [
                 'error' => 'access_denied',
             ]);
+
+            $expectedResponse = new Response(json_encode([
+                'status' => 'error',
+                'message' => 'Authorization was denied by the user: No description provided',
+            ]), 400, ['Content-Type' => 'application/json']);
+
+            $this->errorHandler->shouldReceive('handleCallbackError')
+                ->once()
+                ->with($request)
+                ->andReturn($expectedResponse);
 
             // Act
             $response = $this->controller->__invoke($request);
