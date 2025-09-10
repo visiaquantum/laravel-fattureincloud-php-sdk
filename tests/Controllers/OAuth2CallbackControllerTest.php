@@ -4,6 +4,7 @@ use Codeman\FattureInCloud\Contracts\OAuth2Manager as OAuth2ManagerContract;
 use Codeman\FattureInCloud\Contracts\TokenStorage as TokenStorageContract;
 use Codeman\FattureInCloud\Controllers\OAuth2CallbackController;
 use Codeman\FattureInCloud\Exceptions\OAuth2Exception;
+use Codeman\FattureInCloud\Services\OAuth2ErrorHandler;
 use FattureInCloud\OAuth2\OAuth2TokenResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -14,10 +15,12 @@ describe('OAuth2CallbackController', function () {
     beforeEach(function () {
         $this->oauth2Manager = Mockery::mock(OAuth2ManagerContract::class);
         $this->tokenStorage = Mockery::mock(TokenStorageContract::class);
+        $this->errorHandler = Mockery::mock(OAuth2ErrorHandler::class);
 
         $this->controller = new OAuth2CallbackController(
             $this->oauth2Manager,
-            $this->tokenStorage
+            $this->tokenStorage,
+            $this->errorHandler
         );
     });
 
