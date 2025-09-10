@@ -20,6 +20,8 @@ use FattureInCloud\Api\SuppliersApi;
 use FattureInCloud\Api\TaxesApi;
 use FattureInCloud\Api\UserApi;
 use FattureInCloud\OAuth2\OAuth2TokenResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 /**
  * @SuppressWarnings("php:S1448")
@@ -51,6 +53,85 @@ class FattureInCloudSdk
         $this->tokenStorage->store($this->contextKey, $tokenResponse);
 
         return $tokenResponse;
+    }
+
+    /**
+     * Generate a redirect response to the Fatture in Cloud OAuth2 authorization page.
+     *
+     * This is a convenience method that combines getAuthorizationUrl() with Laravel's
+     * redirect() helper to return a RedirectResponse that can be used directly from
+     * controllers.
+     *
+     * @param  array  $scopes  Array of OAuth2 scopes to request (e.g., [Scope::ENTITY_CLIENTS_READ])
+     * @return RedirectResponse Laravel redirect response to the authorization URL
+     *
+     * @throws \LogicException If OAuth2 manager is not properly initialized
+     *
+     * @example
+     * ```php
+     * // In a controller
+     * public function auth(FattureInCloudSdk $sdk)
+     * {
+     *     return $sdk->redirectToAuthorization([
+     *         Scope::ENTITY_CLIENTS_READ,
+     *         Scope::ISSUED_DOCUMENTS_INVOICES_ALL
+     *     ]);
+     * }
+     * ```
+     */
+    public function redirectToAuthorization(array $scopes): RedirectResponse
+    {
+        if (! $this->oauthManager->isInitialized()) {
+            throw new \LogicException('OAuth2 manager is not initialized. Please ensure FATTUREINCLOUD_CLIENT_ID and FATTUREINCLOUD_CLIENT_SECRET are configured.');
+        }
+
+        $authUrl = $this->oauthManager->getAuthorizationUrl($scopes, null);
+
+        return redirect($authUrl);
+    }
+
+    /**
+     * Handle the OAuth2 authorization callback from Fatture in Cloud.
+     *
+     * This method processes the callback request from the OAuth2 authorization flow,
+     * validates the parameters, exchanges the authorization code for tokens, and
+     * stores the tokens automatically.
+     *
+     * @param  Request  $request  Laravel HTTP request containing callback parameters
+     * @return OAuth2TokenResponse The token response containing access and refresh tokens
+     *
+     * @throws \InvalidArgumentException If OAuth2 error occurred or required parameters are missing
+     *
+     * @example
+     * ```php
+     * // In a controller handling the callback route
+     * public function callback(Request $request, FattureInCloudSdk $sdk)
+     * {
+     *     try {
+     *         $tokenResponse = $sdk->handleOAuth2Callback($request);
+     *         return redirect('/dashboard')->with('success', 'Authentication successful!');
+     *     } catch (\InvalidArgumentException $e) {
+     *         return redirect('/auth')->with('error', 'Authentication failed: ' . $e->getMessage());
+     *     }
+     * }
+     * ```
+     */
+    public function handleOAuth2Callback(Request $request): OAuth2TokenResponse
+    {
+        $code = $request->get('code');
+        $state = $request->get('state');
+        $error = $request->get('error');
+        $errorDescription = $request->get('error_description');
+
+        if ($error) {
+            throw new \InvalidArgumentException("OAuth2 authorization failed: {$error}".($errorDescription ? " - {$errorDescription}" : ''));
+        }
+
+        if (! $code || ! $state) {
+            throw new \InvalidArgumentException('Missing required OAuth2 callback parameters: code and state are required');
+        }
+
+        return $this->fetchToken($code, $state);
     }
 
     public function refreshToken(): ?OAuth2TokenResponse
