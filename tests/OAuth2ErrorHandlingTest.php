@@ -3,6 +3,7 @@
 use Codeman\FattureInCloud\Exceptions\AuthorizationException;
 use Codeman\FattureInCloud\Exceptions\OAuth2ErrorCategory;
 use Codeman\FattureInCloud\Exceptions\OAuth2Exception;
+use Codeman\FattureInCloud\Exceptions\OAuth2ExceptionFactory;
 use Codeman\FattureInCloud\Services\OAuth2ErrorHandler;
 use Illuminate\Http\Request;
 
@@ -113,10 +114,10 @@ describe('OAuth2 Error Handling', function () {
             $authError = OAuth2Exception::accessDenied();
             expect($authError->getCategory())->toBe(OAuth2ErrorCategory::AUTHORIZATION);
 
-            $tokenError = OAuth2Exception::invalidCode();
+            $tokenError = OAuth2ExceptionFactory::invalidCode();
             expect($tokenError->getCategory())->toBe(OAuth2ErrorCategory::TOKEN_EXCHANGE);
 
-            $refreshError = OAuth2Exception::invalidRefreshToken();
+            $refreshError = OAuth2ExceptionFactory::invalidRefreshToken();
             expect($refreshError->getCategory())->toBe(OAuth2ErrorCategory::TOKEN_REFRESH);
 
             $configError = OAuth2Exception::missingConfiguration('client_id');

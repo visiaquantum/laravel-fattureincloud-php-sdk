@@ -5,6 +5,7 @@ namespace Codeman\FattureInCloud\Services;
 use Codeman\FattureInCloud\Exceptions\AuthorizationException;
 use Codeman\FattureInCloud\Exceptions\OAuth2ErrorCategory;
 use Codeman\FattureInCloud\Exceptions\OAuth2Exception;
+use Codeman\FattureInCloud\Exceptions\OAuth2ExceptionFactory;
 use Exception;
 use FattureInCloud\OAuth2\OAuth2Error;
 use Illuminate\Http\Request;
@@ -19,14 +20,14 @@ class OAuth2ErrorHandler
         $errorDescription = $request->get('error_description', 'No description provided');
 
         $exception = match ($error) {
-            AuthorizationException::ACCESS_DENIED => OAuth2Exception::accessDenied($errorDescription),
-            AuthorizationException::INVALID_REQUEST => OAuth2Exception::invalidRequest($errorDescription),
-            AuthorizationException::UNAUTHORIZED_CLIENT => OAuth2Exception::unauthorizedClient($errorDescription),
-            AuthorizationException::UNSUPPORTED_RESPONSE_TYPE => OAuth2Exception::unsupportedResponseType($errorDescription),
-            AuthorizationException::INVALID_SCOPE => OAuth2Exception::invalidScope($errorDescription),
-            AuthorizationException::SERVER_ERROR => OAuth2Exception::serverError($errorDescription),
-            AuthorizationException::TEMPORARILY_UNAVAILABLE => OAuth2Exception::temporarilyUnavailable($errorDescription),
-            default => OAuth2Exception::invalidRequest("Unknown OAuth2 error: {$error}. {$errorDescription}"),
+            AuthorizationException::ACCESS_DENIED => OAuth2ExceptionFactory::accessDenied($errorDescription),
+            AuthorizationException::INVALID_REQUEST => OAuth2ExceptionFactory::invalidRequest($errorDescription),
+            AuthorizationException::UNAUTHORIZED_CLIENT => OAuth2ExceptionFactory::unauthorizedClient($errorDescription),
+            AuthorizationException::UNSUPPORTED_RESPONSE_TYPE => OAuth2ExceptionFactory::unsupportedResponseType($errorDescription),
+            AuthorizationException::INVALID_SCOPE => OAuth2ExceptionFactory::invalidScope($errorDescription),
+            AuthorizationException::SERVER_ERROR => OAuth2ExceptionFactory::serverError($errorDescription),
+            AuthorizationException::TEMPORARILY_UNAVAILABLE => OAuth2ExceptionFactory::temporarilyUnavailable($errorDescription),
+            default => OAuth2ExceptionFactory::invalidRequest("Unknown OAuth2 error: {$error}. {$errorDescription}"),
         };
 
         $this->logError($exception, 'OAuth2 callback error occurred', [
@@ -39,7 +40,7 @@ class OAuth2ErrorHandler
 
     public function handleTokenError(OAuth2Error $oauth2Error): Response
     {
-        $exception = OAuth2Exception::fromOAuth2Error($oauth2Error);
+        $exception = OAuth2ExceptionFactory::fromOAuth2Error($oauth2Error);
 
         $this->logError($exception, 'OAuth2 token exchange error occurred');
 
@@ -50,9 +51,9 @@ class OAuth2ErrorHandler
     {
         $oauth2Exception = match (true) {
             $exception instanceof OAuth2Exception => $exception,
-            $exception instanceof \InvalidArgumentException => OAuth2Exception::invalidRequest($exception->getMessage()),
-            $exception instanceof \LogicException => OAuth2Exception::missingConfiguration('oauth2_manager', $exception->getMessage()),
-            default => OAuth2Exception::serverError('An unexpected error occurred: '.$exception->getMessage()),
+            $exception instanceof \InvalidArgumentException => OAuth2ExceptionFactory::invalidRequest($exception->getMessage()),
+            $exception instanceof \LogicException => OAuth2ExceptionFactory::missingConfiguration('oauth2_manager', $exception->getMessage()),
+            default => OAuth2ExceptionFactory::serverError('An unexpected error occurred: '.$exception->getMessage()),
         };
 
         $this->logError($oauth2Exception, 'OAuth2 error handled', [
@@ -65,7 +66,7 @@ class OAuth2ErrorHandler
 
     public function handleNetworkError(Exception $networkException): Response
     {
-        $exception = OAuth2Exception::networkFailure(
+        $exception = OAuth2ExceptionFactory::networkFailure(
             'Network connection failed during OAuth2 operation',
             $networkException
         );
@@ -79,7 +80,7 @@ class OAuth2ErrorHandler
 
     public function handleConfigurationError(string $configKey, ?string $details = null): Response
     {
-        $exception = OAuth2Exception::missingConfiguration($configKey, $details);
+        $exception = OAuth2ExceptionFactory::missingConfiguration($configKey, $details);
 
         $this->logError($exception, 'OAuth2 configuration error detected');
 

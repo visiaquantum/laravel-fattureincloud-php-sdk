@@ -5,6 +5,7 @@ namespace Codeman\FattureInCloud\Controllers;
 use Codeman\FattureInCloud\Contracts\OAuth2Manager as OAuth2ManagerContract;
 use Codeman\FattureInCloud\Contracts\TokenStorage as TokenStorageContract;
 use Codeman\FattureInCloud\Exceptions\OAuth2Exception;
+use Codeman\FattureInCloud\Exceptions\OAuth2ExceptionFactory;
 use Codeman\FattureInCloud\Services\OAuth2ErrorHandler;
 use FattureInCloud\OAuth2\OAuth2TokenResponse;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class OAuth2CallbackController extends Controller
 
         // Validate required parameters
         if (! $request->has(['code', 'state'])) {
-            $exception = OAuth2Exception::invalidRequest('Missing required parameters: code and state are required');
+            $exception = OAuth2ExceptionFactory::invalidRequest('Missing required parameters: code and state are required');
 
             return $this->errorHandler->createErrorResponse($exception);
         }

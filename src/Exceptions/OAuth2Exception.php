@@ -97,108 +97,63 @@ abstract class OAuth2Exception extends Exception
         return $sanitized;
     }
 
+    /**
+     * Create OAuth2 exception from OAuth2Error response
+     * @deprecated Use OAuth2ExceptionFactory::fromOAuth2Error() instead
+     */
     public static function fromOAuth2Error(OAuth2Error $oauth2Error): AuthorizationException|TokenExchangeException|TokenRefreshException|ConfigurationException
     {
-        $error = $oauth2Error->getError();
-
-        return match ($error) {
-            // Authorization errors
-            self::ACCESS_DENIED, self::INVALID_REQUEST, 'unauthorized_client',
-            'unsupported_response_type', 'invalid_scope',
-            self::SERVER_ERROR, self::TEMPORARILY_UNAVAILABLE => AuthorizationException::fromOAuth2Error($oauth2Error),
-
-            // Token exchange errors
-            'invalid_code', 'invalid_client_credentials', 'network_failure' => TokenExchangeException::fromOAuth2Error($oauth2Error),
-
-            // Token refresh errors
-            'invalid_refresh_token', 'client_authentication_failed', 'token_revoked' => TokenRefreshException::fromOAuth2Error($oauth2Error),
-
-            // Configuration errors
-            'missing_configuration', 'invalid_redirect_url', 'malformed_configuration' => ConfigurationException::fromOAuth2Error($oauth2Error),
-
-            // Default to authorization for unknown errors
-            default => AuthorizationException::fromOAuth2Error($oauth2Error),
-        };
+        return OAuth2ExceptionFactory::fromOAuth2Error($oauth2Error);
     }
 
-    // Backward-compatible factory methods (delegates to specific classes)
+    // Essential factory methods for backward compatibility
+    // Most factory methods moved to OAuth2ExceptionFactory to reduce method count
+
+    /**
+     * @deprecated Use OAuth2ExceptionFactory::accessDenied() instead
+     */
     public static function accessDenied(?string $description = null): AuthorizationException
     {
-        return AuthorizationException::accessDenied($description);
+        return OAuth2ExceptionFactory::accessDenied($description);
     }
 
+    /**
+     * @deprecated Use OAuth2ExceptionFactory::invalidRequest() instead
+     */
     public static function invalidRequest(?string $description = null): AuthorizationException
     {
-        return AuthorizationException::invalidRequest($description);
+        return OAuth2ExceptionFactory::invalidRequest($description);
     }
 
-    public static function unauthorizedClient(?string $description = null): AuthorizationException
-    {
-        return AuthorizationException::unauthorizedClient($description);
-    }
-
-    public static function unsupportedResponseType(?string $description = null): AuthorizationException
-    {
-        return AuthorizationException::unsupportedResponseType($description);
-    }
-
-    public static function invalidScope(?string $description = null): AuthorizationException
-    {
-        return AuthorizationException::invalidScope($description);
-    }
-
+    /**
+     * @deprecated Use OAuth2ExceptionFactory::serverError() instead
+     */
     public static function serverError(?string $description = null): AuthorizationException
     {
-        return AuthorizationException::serverError($description);
+        return OAuth2ExceptionFactory::serverError($description);
     }
 
+    /**
+     * @deprecated Use OAuth2ExceptionFactory::temporarilyUnavailable() instead
+     */
     public static function temporarilyUnavailable(?string $description = null): AuthorizationException
     {
-        return AuthorizationException::temporarilyUnavailable($description);
+        return OAuth2ExceptionFactory::temporarilyUnavailable($description);
     }
 
-    public static function invalidCode(?string $description = null): TokenExchangeException
-    {
-        return TokenExchangeException::invalidCode($description);
-    }
-
-    public static function invalidClientCredentials(?string $description = null): TokenExchangeException
-    {
-        return TokenExchangeException::invalidClientCredentials($description);
-    }
-
+    /**
+     * @deprecated Use OAuth2ExceptionFactory::networkFailure() instead
+     */
     public static function networkFailure(?string $description = null, ?Exception $previous = null): TokenExchangeException
     {
-        return TokenExchangeException::networkFailure($description, $previous);
+        return OAuth2ExceptionFactory::networkFailure($description, $previous);
     }
 
-    public static function invalidRefreshToken(?string $description = null): TokenRefreshException
-    {
-        return TokenRefreshException::invalidRefreshToken($description);
-    }
-
-    public static function clientAuthenticationFailed(?string $description = null): TokenRefreshException
-    {
-        return TokenRefreshException::clientAuthenticationFailed($description);
-    }
-
-    public static function tokenRevoked(?string $description = null): TokenRefreshException
-    {
-        return TokenRefreshException::tokenRevoked($description);
-    }
-
+    /**
+     * @deprecated Use OAuth2ExceptionFactory::missingConfiguration() instead
+     */
     public static function missingConfiguration(string $configKey, ?string $description = null): ConfigurationException
     {
-        return ConfigurationException::missingConfiguration($configKey, $description);
-    }
-
-    public static function invalidRedirectUrl(?string $url = null, ?string $description = null): ConfigurationException
-    {
-        return ConfigurationException::invalidRedirectUrl($url, $description);
-    }
-
-    public static function malformedConfiguration(?string $description = null): ConfigurationException
-    {
-        return ConfigurationException::malformedConfiguration($description);
+        return OAuth2ExceptionFactory::missingConfiguration($configKey, $description);
     }
 }
