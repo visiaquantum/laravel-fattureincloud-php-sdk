@@ -193,16 +193,10 @@ class OAuth2AuthorizationCodeManager implements OAuth2ManagerContract
 
     private function isNetworkError(\Exception $e): bool
     {
-        // Check for specific network-related exception types
-        if (class_exists('GuzzleHttp\\Exception\\ConnectException') && $e instanceof \GuzzleHttp\Exception\ConnectException) {
-            return true;
-        }
-
-        if (class_exists('GuzzleHttp\\Exception\\RequestException') && $e instanceof \GuzzleHttp\Exception\RequestException) {
-            return true;
-        }
-
-        if (class_exists('GuzzleHttp\\Exception\\TransferException') && $e instanceof \GuzzleHttp\Exception\TransferException) {
+        // Check for specific network-related exception types (Guzzle is guaranteed to be available)
+        if ($e instanceof \GuzzleHttp\Exception\ConnectException ||
+            $e instanceof \GuzzleHttp\Exception\RequestException ||
+            $e instanceof \GuzzleHttp\Exception\TransferException) {
             return true;
         }
 
