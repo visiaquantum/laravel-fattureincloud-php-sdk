@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 describe('OAuth2 Error Handling', function () {
     beforeEach(function () {
-        $this->errorHandler = new OAuth2ErrorHandler();
+        $this->errorHandler = new OAuth2ErrorHandler;
     });
 
     describe('OAuth2Exception Factory Methods', function () {
@@ -59,7 +59,7 @@ describe('OAuth2 Error Handling', function () {
             $response = $this->errorHandler->handleCallbackError($request);
 
             expect($response->getStatusCode())->toBe(401);
-            
+
             $data = json_decode($response->getContent(), true);
             expect($data['status'])->toBe('error');
             expect($data['error'])->toBe('access_denied');
@@ -74,7 +74,7 @@ describe('OAuth2 Error Handling', function () {
             ], 'Token exchange successful');
 
             expect($response->getStatusCode())->toBe(200);
-            
+
             $data = json_decode($response->getContent(), true);
             expect($data['status'])->toBe('success');
             expect($data['message'])->toBe('Token exchange successful');

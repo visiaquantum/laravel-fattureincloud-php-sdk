@@ -200,15 +200,15 @@ class OAuth2AuthorizationCodeManager implements OAuth2ManagerContract
         if (class_exists('GuzzleHttp\\Exception\\ConnectException') && $e instanceof \GuzzleHttp\Exception\ConnectException) {
             return true;
         }
-        
+
         if (class_exists('GuzzleHttp\\Exception\\RequestException') && $e instanceof \GuzzleHttp\Exception\RequestException) {
             return true;
         }
-        
+
         if (class_exists('GuzzleHttp\\Exception\\TransferException') && $e instanceof \GuzzleHttp\Exception\TransferException) {
             return true;
         }
-        
+
         // Check for network-related error messages
         $networkErrorMessages = [
             'connection timed out',
@@ -221,15 +221,15 @@ class OAuth2AuthorizationCodeManager implements OAuth2ManagerContract
             'curl error',
             'timeout',
         ];
-        
+
         $errorMessage = strtolower($e->getMessage());
-        
+
         foreach ($networkErrorMessages as $networkMessage) {
             if (str_contains($errorMessage, $networkMessage)) {
                 return true;
             }
         }
-        
+
         return false;
     }
 }
