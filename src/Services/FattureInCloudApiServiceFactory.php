@@ -4,6 +4,20 @@ namespace Codeman\FattureInCloud\Services;
 
 use Codeman\FattureInCloud\Contracts\ApiServiceFactory as ApiServiceFactoryContract;
 use Codeman\FattureInCloud\Exceptions\UnsupportedServiceException;
+use FattureInCloud\Api\ArchiveApi;
+use FattureInCloud\Api\CashbookApi;
+use FattureInCloud\Api\ClientsApi;
+use FattureInCloud\Api\CompaniesApi;
+use FattureInCloud\Api\InfoApi;
+use FattureInCloud\Api\IssuedDocumentsApi;
+use FattureInCloud\Api\PriceListsApi;
+use FattureInCloud\Api\ProductsApi;
+use FattureInCloud\Api\ReceiptsApi;
+use FattureInCloud\Api\ReceivedDocumentsApi;
+use FattureInCloud\Api\SettingsApi;
+use FattureInCloud\Api\SuppliersApi;
+use FattureInCloud\Api\TaxesApi;
+use FattureInCloud\Api\UserApi;
 use FattureInCloud\Configuration;
 use FattureInCloud\HeaderSelector;
 use GuzzleHttp\Client as HttpClient;
@@ -11,26 +25,26 @@ use GuzzleHttp\Client as HttpClient;
 class FattureInCloudApiServiceFactory implements ApiServiceFactoryContract
 {
     private array $serviceMapping = [
-        'clients' => \FattureInCloud\Api\ClientsApi::class,
-        'companies' => \FattureInCloud\Api\CompaniesApi::class,
-        'info' => \FattureInCloud\Api\InfoApi::class,
-        'issuedDocuments' => \FattureInCloud\Api\IssuedDocumentsApi::class,
-        'products' => \FattureInCloud\Api\ProductsApi::class,
-        'receipts' => \FattureInCloud\Api\ReceiptsApi::class,
-        'receivedDocuments' => \FattureInCloud\Api\ReceivedDocumentsApi::class,
-        'suppliers' => \FattureInCloud\Api\SuppliersApi::class,
-        'taxes' => \FattureInCloud\Api\TaxesApi::class,
-        'user' => \FattureInCloud\Api\UserApi::class,
-        'settings' => \FattureInCloud\Api\SettingsApi::class,
-        'archive' => \FattureInCloud\Api\ArchiveApi::class,
-        'cashbook' => \FattureInCloud\Api\CashbookApi::class,
-        'priceLists' => \FattureInCloud\Api\PriceListsApi::class,
+        'clients' => ClientsApi::class,
+        'companies' => CompaniesApi::class,
+        'info' => InfoApi::class,
+        'issuedDocuments' => IssuedDocumentsApi::class,
+        'products' => ProductsApi::class,
+        'receipts' => ReceiptsApi::class,
+        'receivedDocuments' => ReceivedDocumentsApi::class,
+        'suppliers' => SuppliersApi::class,
+        'taxes' => TaxesApi::class,
+        'user' => UserApi::class,
+        'settings' => SettingsApi::class,
+        'archive' => ArchiveApi::class,
+        'cashbook' => CashbookApi::class,
+        'priceLists' => PriceListsApi::class,
     ];
 
     public function __construct(
-        private HttpClient $httpClient,
-        private Configuration $configuration,
-        private HeaderSelector $headerSelector
+        private readonly HttpClient $httpClient,
+        private readonly Configuration $configuration,
+        private readonly HeaderSelector $headerSelector
     ) {}
 
     public function make(string $serviceName): object
