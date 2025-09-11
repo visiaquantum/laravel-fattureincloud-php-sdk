@@ -95,7 +95,9 @@ class FattureInCloudServiceProvider extends PackageServiceProvider
             return new FattureInCloudApiServiceFactory(
                 new HttpClient,
                 $configuration,
-                new HeaderSelector
+                new HeaderSelector,
+                $app->make(TokenStorageContract::class),
+                'default'
             );
         });
     }

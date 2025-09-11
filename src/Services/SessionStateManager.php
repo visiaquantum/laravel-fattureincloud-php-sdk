@@ -4,6 +4,7 @@ namespace Codeman\FattureInCloud\Services;
 
 use Codeman\FattureInCloud\Contracts\StateManager as StateManagerContract;
 use Illuminate\Contracts\Session\Session;
+use Illuminate\Support\Str;
 
 class SessionStateManager implements StateManagerContract
 {
@@ -12,6 +13,11 @@ class SessionStateManager implements StateManagerContract
     public function __construct(
         private Session $session
     ) {}
+
+    public function generateState(): string
+    {
+        return Str::random(40);
+    }
 
     public function store(string $state): void
     {

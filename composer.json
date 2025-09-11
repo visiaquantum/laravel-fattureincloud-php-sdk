@@ -38,8 +38,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Codeman\\FattureInCloud\\": "src/",
-            "Codeman\\FattureInCloud\\Database\\Factories\\": "database/factories/"
+            "Codeman\\FattureInCloud\\": "src/"
         }
     },
     "autoload-dev": {

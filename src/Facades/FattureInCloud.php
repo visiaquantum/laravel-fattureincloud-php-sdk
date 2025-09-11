@@ -2,15 +2,16 @@
 
 namespace Codeman\FattureInCloud\Facades;
 
+use Codeman\FattureInCloud\FattureInCloudSdk;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Codeman\FattureInCloud\FattureInCloudSdk
+ * @see FattureInCloudSdk
  */
 class FattureInCloud extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \Codeman\FattureInCloud\FattureInCloudSdk::class;
+        return FattureInCloudSdk::class;
     }
 }

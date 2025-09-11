@@ -3,6 +3,7 @@
 namespace Codeman\FattureInCloud\Services;
 
 use Codeman\FattureInCloud\Contracts\ApiServiceFactory as ApiServiceFactoryContract;
+use Codeman\FattureInCloud\Contracts\TokenStorage;
 use Codeman\FattureInCloud\Exceptions\UnsupportedServiceException;
 use FattureInCloud\Api\ArchiveApi;
 use FattureInCloud\Api\CashbookApi;
@@ -44,7 +45,9 @@ class FattureInCloudApiServiceFactory implements ApiServiceFactoryContract
     public function __construct(
         private readonly HttpClient $httpClient,
         private readonly Configuration $configuration,
-        private readonly HeaderSelector $headerSelector
+        private readonly HeaderSelector $headerSelector,
+        private readonly ?TokenStorage $tokenStorage = null,
+        private readonly string $contextKey = 'default'
     ) {}
 
     public function make(string $serviceName): object
@@ -53,11 +56,21 @@ class FattureInCloudApiServiceFactory implements ApiServiceFactoryContract
             throw new UnsupportedServiceException("Service '{$serviceName}' is not supported");
         }
 
+        // Create a fresh configuration with current token if TokenStorage is available
+        $config = clone $this->configuration;
+        
+        if ($this->tokenStorage) {
+            $currentToken = $this->tokenStorage->getAccessToken($this->contextKey);
+            if ($currentToken) {
+                $config->setAccessToken($currentToken);
+            }
+        }
+
         $apiClass = $this->serviceMapping[$serviceName];
 
         return new $apiClass(
             $this->httpClient,
-            $this->configuration,
+            $config,
             $this->headerSelector
         );
     }
