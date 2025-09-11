@@ -1,9 +1,7 @@
 <?php
 
-use Codeman\FattureInCloud\Services\FattureInCloudApiServiceFactory;
 use Codeman\FattureInCloud\Exceptions\UnsupportedServiceException;
-use FattureInCloud\Configuration;
-use FattureInCloud\HeaderSelector;
+use Codeman\FattureInCloud\Services\FattureInCloudApiServiceFactory;
 use FattureInCloud\Api\ArchiveApi;
 use FattureInCloud\Api\CashbookApi;
 use FattureInCloud\Api\ClientsApi;
@@ -18,6 +16,8 @@ use FattureInCloud\Api\SettingsApi;
 use FattureInCloud\Api\SuppliersApi;
 use FattureInCloud\Api\TaxesApi;
 use FattureInCloud\Api\UserApi;
+use FattureInCloud\Configuration;
+use FattureInCloud\HeaderSelector;
 use GuzzleHttp\Client as HttpClient;
 
 describe('FattureInCloudApiServiceFactory', function () {
@@ -25,7 +25,7 @@ describe('FattureInCloudApiServiceFactory', function () {
         $this->httpClient = Mockery::mock(HttpClient::class);
         $this->configuration = Mockery::mock(Configuration::class);
         $this->headerSelector = Mockery::mock(HeaderSelector::class);
-        
+
         $this->factory = new FattureInCloudApiServiceFactory(
             $this->httpClient,
             $this->configuration,
@@ -50,10 +50,10 @@ describe('FattureInCloudApiServiceFactory', function () {
     describe('supported services', function () {
         test('getSupportedServices returns all supported service names', function () {
             $supportedServices = $this->factory->getSupportedServices();
-            
+
             $expectedServices = [
                 'clients',
-                'companies', 
+                'companies',
                 'info',
                 'issuedDocuments',
                 'products',
@@ -67,7 +67,7 @@ describe('FattureInCloudApiServiceFactory', function () {
                 'cashbook',
                 'priceLists',
             ];
-            
+
             expect($supportedServices)->toBe($expectedServices);
             expect(count($supportedServices))->toBe(14);
         });
@@ -234,10 +234,10 @@ describe('FattureInCloudApiServiceFactory', function () {
 
     describe('dependency injection', function () {
         test('passes dependencies to created API services', function () {
-            $httpClient = new HttpClient();
-            $configuration = new Configuration();
-            $headerSelector = new HeaderSelector();
-            
+            $httpClient = new HttpClient;
+            $configuration = new Configuration;
+            $headerSelector = new HeaderSelector;
+
             $factory = new FattureInCloudApiServiceFactory(
                 $httpClient,
                 $configuration,
@@ -251,10 +251,10 @@ describe('FattureInCloudApiServiceFactory', function () {
 
         test('created services have consistent dependency injection', function () {
             $services = ['clients', 'companies', 'info', 'products'];
-            
+
             foreach ($services as $serviceName) {
                 $api = $this->factory->make($serviceName);
-                
+
                 // Each API should be instantiated successfully with the provided dependencies
                 expect($api)->toBeObject();
             }
@@ -283,10 +283,10 @@ describe('FattureInCloudApiServiceFactory', function () {
     describe('service mapping completeness', function () {
         test('all supported services can be created successfully', function () {
             $supportedServices = $this->factory->getSupportedServices();
-            
+
             foreach ($supportedServices as $serviceName) {
                 $service = $this->factory->make($serviceName);
-                
+
                 expect($service)->toBeObject();
                 expect($service)->not()->toBeNull();
             }
@@ -312,7 +312,7 @@ describe('FattureInCloudApiServiceFactory', function () {
 
             foreach ($expectedMappings as $serviceName => $expectedClass) {
                 $service = $this->factory->make($serviceName);
-                
+
                 expect($service)->toBeInstanceOf($expectedClass);
             }
         });
@@ -320,22 +320,22 @@ describe('FattureInCloudApiServiceFactory', function () {
 
     describe('configuration handling', function () {
         test('works with different Configuration instances', function () {
-            $config1 = new Configuration();
+            $config1 = new Configuration;
             $config1->setAccessToken('token1');
-            
-            $config2 = new Configuration();
+
+            $config2 = new Configuration;
             $config2->setAccessToken('token2');
 
             $factory1 = new FattureInCloudApiServiceFactory(
-                new HttpClient(),
+                new HttpClient,
                 $config1,
-                new HeaderSelector()
+                new HeaderSelector
             );
 
             $factory2 = new FattureInCloudApiServiceFactory(
-                new HttpClient(),
+                new HttpClient,
                 $config2,
-                new HeaderSelector()
+                new HeaderSelector
             );
 
             $clients1 = $factory1->make('clients');
@@ -347,9 +347,9 @@ describe('FattureInCloudApiServiceFactory', function () {
 
         test('accepts empty Configuration', function () {
             $factory = new FattureInCloudApiServiceFactory(
-                new HttpClient(),
-                new Configuration(),
-                new HeaderSelector()
+                new HttpClient,
+                new Configuration,
+                new HeaderSelector
             );
 
             $clientsApi = $factory->make('clients');

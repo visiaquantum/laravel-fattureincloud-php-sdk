@@ -1,10 +1,9 @@
 <?php
 
+use Codeman\FattureInCloud\Contracts\OAuth2Manager;
 use Codeman\FattureInCloud\Facades\FattureInCloud;
 use Codeman\FattureInCloud\FattureInCloudSdk;
-use Codeman\FattureInCloud\Contracts\OAuth2Manager;
 use FattureInCloud\Api\ClientsApi;
-use FattureInCloud\OAuth2\OAuth2TokenResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -36,7 +35,7 @@ describe('FattureInCloud Facade', function () {
             $reflection = new ReflectionClass(FattureInCloud::class);
             $method = $reflection->getMethod('getFacadeAccessor');
             $method->setAccessible(true);
-            
+
             $accessor = $method->invoke(null);
 
             expect($accessor)->toBe(FattureInCloudSdk::class);
@@ -52,7 +51,7 @@ describe('FattureInCloud Facade', function () {
 
         test('delegates getAuthorizationUrl() method', function () {
             $scopes = ['scope1', 'scope2'];
-            
+
             $result = FattureInCloud::getAuthorizationUrl($scopes);
 
             expect($result)->toBeString();
@@ -61,7 +60,7 @@ describe('FattureInCloud Facade', function () {
 
         test('delegates redirectToAuthorization() method', function () {
             $scopes = ['scope1'];
-            
+
             $result = FattureInCloud::redirectToAuthorization($scopes);
 
             expect($result)->toBeInstanceOf(RedirectResponse::class);
@@ -69,14 +68,14 @@ describe('FattureInCloud Facade', function () {
 
         test('delegates company management methods', function () {
             $result = FattureInCloud::setCompany(12345);
-            
+
             expect($result)->toBeInstanceOf(FattureInCloudSdk::class);
             expect(FattureInCloud::getCompany())->toBe('12345');
         });
 
         test('delegates token management methods', function () {
             expect(FattureInCloud::isTokenExpired())->toBeBool();
-            
+
             // Test clearTokens doesn't throw
             FattureInCloud::clearTokens();
         });

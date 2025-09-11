@@ -4,8 +4,8 @@ use Codeman\FattureInCloud\Contracts\ApiServiceFactory;
 use Codeman\FattureInCloud\Contracts\OAuth2Manager;
 use Codeman\FattureInCloud\Contracts\StateManager;
 use Codeman\FattureInCloud\Contracts\TokenStorage;
-use Codeman\FattureInCloud\FattureInCloudServiceProvider;
 use Codeman\FattureInCloud\FattureInCloudSdk;
+use Codeman\FattureInCloud\FattureInCloudServiceProvider;
 use Codeman\FattureInCloud\Services\CacheTokenStorage;
 use Codeman\FattureInCloud\Services\FattureInCloudApiServiceFactory;
 use Codeman\FattureInCloud\Services\OAuth2AuthorizationCodeManager;
@@ -22,16 +22,16 @@ describe('FattureInCloudServiceProvider', function () {
     describe('package configuration', function () {
         test('configures package correctly', function () {
             $package = Mockery::mock(\Spatie\LaravelPackageTools\Package::class);
-            
+
             $package->shouldReceive('name')
                 ->once()
                 ->with('laravel-fatture-in-cloud')
                 ->andReturnSelf();
-            
+
             $package->shouldReceive('hasConfigFile')
                 ->once()
                 ->andReturnSelf();
-                
+
             $package->shouldReceive('hasRoute')
                 ->once()
                 ->with('web')

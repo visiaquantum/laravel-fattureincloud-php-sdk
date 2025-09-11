@@ -14,7 +14,7 @@ describe('OAuth2 Error Handling', function () {
 
     describe('OAuth2Exception Factory Methods', function () {
         test('accessDenied creates proper exception', function () {
-            $exception = OAuth2Exception::accessDenied('User cancelled');
+            $exception = OAuth2ExceptionFactory::accessDenied('User cancelled');
 
             expect($exception->getError())->toBe('access_denied');
             expect($exception->getErrorDescription())->toBe('User cancelled');
@@ -24,7 +24,7 @@ describe('OAuth2 Error Handling', function () {
         });
 
         test('networkFailure creates retryable exception', function () {
-            $exception = OAuth2Exception::networkFailure('Connection timeout');
+            $exception = OAuth2ExceptionFactory::networkFailure('Connection timeout');
 
             expect($exception->getError())->toBe('network_failure');
             expect($exception->getCategory())->toBe(OAuth2ErrorCategory::TOKEN_EXCHANGE);
@@ -33,7 +33,7 @@ describe('OAuth2 Error Handling', function () {
         });
 
         test('missingConfiguration creates proper exception', function () {
-            $exception = OAuth2Exception::missingConfiguration('client_id');
+            $exception = OAuth2ExceptionFactory::missingConfiguration('client_id');
 
             expect($exception->getError())->toBe('missing_configuration');
             expect($exception->getCategory())->toBe(OAuth2ErrorCategory::CONFIGURATION);
@@ -41,11 +41,11 @@ describe('OAuth2 Error Handling', function () {
         });
 
         test('getUserFriendlyMessage returns appropriate messages', function () {
-            $accessDenied = OAuth2Exception::accessDenied();
+            $accessDenied = OAuth2ExceptionFactory::accessDenied();
             expect($accessDenied->getUserFriendlyMessage())
                 ->toBe('Authorization was cancelled. Please try again if you want to connect your account.');
 
-            $networkError = OAuth2Exception::networkFailure();
+            $networkError = OAuth2ExceptionFactory::networkFailure();
             expect($networkError->getUserFriendlyMessage())
                 ->toBe('Network connection failed. Please check your connection and try again.');
         });
@@ -84,7 +84,7 @@ describe('OAuth2 Error Handling', function () {
         });
 
         test('includes retry information for retryable errors', function () {
-            $exception = OAuth2Exception::temporarilyUnavailable();
+            $exception = OAuth2ExceptionFactory::temporarilyUnavailable();
             $response = $this->errorHandler->createErrorResponse($exception);
 
             $data = json_decode($response->getContent(), true);
@@ -111,7 +111,7 @@ describe('OAuth2 Error Handling', function () {
 
     describe('Error Categories', function () {
         test('correctly categorizes different error types', function () {
-            $authError = OAuth2Exception::accessDenied();
+            $authError = OAuth2ExceptionFactory::accessDenied();
             expect($authError->getCategory())->toBe(OAuth2ErrorCategory::AUTHORIZATION);
 
             $tokenError = OAuth2ExceptionFactory::invalidCode();
@@ -120,7 +120,7 @@ describe('OAuth2 Error Handling', function () {
             $refreshError = OAuth2ExceptionFactory::invalidRefreshToken();
             expect($refreshError->getCategory())->toBe(OAuth2ErrorCategory::TOKEN_REFRESH);
 
-            $configError = OAuth2Exception::missingConfiguration('client_id');
+            $configError = OAuth2ExceptionFactory::missingConfiguration('client_id');
             expect($configError->getCategory())->toBe(OAuth2ErrorCategory::CONFIGURATION);
         });
     });

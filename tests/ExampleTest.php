@@ -18,13 +18,13 @@ describe('Package Basic Functionality', function () {
         it('resolves services as singletons', function () {
             $sdk1 = app(FattureInCloudSdk::class);
             $sdk2 = app(FattureInCloudSdk::class);
-            
+
             expect($sdk1)->toBe($sdk2);
         });
 
         it('creates SDK with properly injected dependencies', function () {
             $sdk = app(FattureInCloudSdk::class);
-            
+
             expect($sdk)->toBeInstanceOf(FattureInCloudSdk::class);
             expect($sdk->auth())->toBeInstanceOf(OAuth2ManagerContract::class);
         });
@@ -34,14 +34,14 @@ describe('Package Basic Functionality', function () {
         it('facade resolves to the correct service', function () {
             $sdkFromContainer = app(FattureInCloudSdk::class);
             $sdkFromFacade = FattureInCloud::getFacadeRoot();
-            
+
             expect($sdkFromFacade)->toBe($sdkFromContainer);
         });
 
         it('facade maintains service consistency', function () {
             $auth1 = FattureInCloud::auth();
             $auth2 = FattureInCloud::auth();
-            
+
             expect($auth1)->toBe($auth2);
         });
     });
@@ -56,7 +56,7 @@ describe('Package Basic Functionality', function () {
         it('handles missing configuration gracefully', function () {
             config()->set('fatture-in-cloud.client_id', null);
             config()->set('fatture-in-cloud.client_secret', null);
-            
+
             expect(function () {
                 app(OAuth2ManagerContract::class);
             })->not->toThrow(\Exception::class);
@@ -66,14 +66,14 @@ describe('Package Basic Functionality', function () {
     describe('Route Registration', function () {
         it('registers OAuth2 callback route', function () {
             $response = $this->get('/fatture-in-cloud/callback');
-            
+
             // Should return 400 because no parameters are provided, but route exists
             $response->assertStatus(400);
         });
 
         it('callback route has correct name', function () {
             $url = route('fatture-in-cloud.callback');
-            
+
             expect($url)->toContain('fatture-in-cloud/callback');
         });
     });
@@ -82,7 +82,7 @@ describe('Package Basic Functionality', function () {
         it('all core services can be resolved without errors', function () {
             expect(function () {
                 app(TokenStorageContract::class);
-                app(OAuth2ManagerContract::class);  
+                app(OAuth2ManagerContract::class);
                 app(ApiServiceFactoryContract::class);
                 app(FattureInCloudSdk::class);
             })->not->toThrow(\Exception::class);
@@ -90,11 +90,11 @@ describe('Package Basic Functionality', function () {
 
         it('API factory supports expected services', function () {
             $factory = app(ApiServiceFactoryContract::class);
-            
+
             $expectedServices = [
-                'clients', 'companies', 'info', 'issuedDocuments', 
+                'clients', 'companies', 'info', 'issuedDocuments',
                 'products', 'receipts', 'receivedDocuments', 'suppliers',
-                'taxes', 'user', 'settings', 'archive', 'cashbook', 'priceLists'
+                'taxes', 'user', 'settings', 'archive', 'cashbook', 'priceLists',
             ];
 
             foreach ($expectedServices as $service) {

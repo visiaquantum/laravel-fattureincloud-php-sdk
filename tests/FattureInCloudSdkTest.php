@@ -27,7 +27,7 @@ describe('FattureInCloudSdk', function () {
         $this->oauthManager = Mockery::mock(OAuth2Manager::class);
         $this->tokenStorage = Mockery::mock(TokenStorage::class);
         $this->apiFactory = Mockery::mock(ApiServiceFactory::class);
-        
+
         $this->sdk = new FattureInCloudSdk(
             $this->oauthManager,
             $this->tokenStorage,
@@ -50,7 +50,7 @@ describe('FattureInCloudSdk', function () {
                 $this->tokenStorage,
                 $this->apiFactory
             );
-            
+
             expect($sdk)->toBeInstanceOf(FattureInCloudSdk::class);
         });
 
@@ -61,7 +61,7 @@ describe('FattureInCloudSdk', function () {
                 $this->apiFactory,
                 'custom-context'
             );
-            
+
             expect($sdk)->toBeInstanceOf(FattureInCloudSdk::class);
         });
     });
@@ -69,7 +69,7 @@ describe('FattureInCloudSdk', function () {
     describe('auth manager access', function () {
         test('returns OAuth2Manager instance', function () {
             $result = $this->sdk->auth();
-            
+
             expect($result)->toBe($this->oauthManager);
         });
     });
@@ -255,7 +255,7 @@ describe('FattureInCloudSdk', function () {
         test('handles OAuth2 error response', function () {
             $request = new Request([
                 'error' => 'access_denied',
-                'error_description' => 'User denied access'
+                'error_description' => 'User denied access',
             ]);
 
             expect(fn () => $this->sdk->handleOAuth2Callback($request))
@@ -298,7 +298,7 @@ describe('FattureInCloudSdk', function () {
 
         test('getCompany returns set company ID', function () {
             $this->sdk->setCompany(98765);
-            
+
             expect($this->sdk->getCompany())->toBe('98765');
         });
     });
