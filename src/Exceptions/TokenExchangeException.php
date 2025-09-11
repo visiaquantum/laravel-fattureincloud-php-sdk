@@ -41,7 +41,6 @@ class TokenExchangeException extends OAuth2Exception
             null,
             $oauth2Error->getError(),
             $oauth2Error->getErrorDescription(),
-            OAuth2ErrorCategory::TOKEN_EXCHANGE,
             false
         );
     }
@@ -54,7 +53,6 @@ class TokenExchangeException extends OAuth2Exception
             null,
             self::INVALID_CODE,
             $description ?? 'The authorization code is invalid, expired, or has already been used',
-            OAuth2ErrorCategory::TOKEN_EXCHANGE,
             false,
             ['http_status' => 400, 'action' => 'restart_authorization']
         );
@@ -68,7 +66,6 @@ class TokenExchangeException extends OAuth2Exception
             null,
             self::INVALID_CLIENT_CREDENTIALS,
             $description ?? 'The client credentials are invalid or missing',
-            OAuth2ErrorCategory::TOKEN_EXCHANGE,
             false,
             ['http_status' => 401, 'action' => 'check_configuration']
         );
@@ -82,7 +79,6 @@ class TokenExchangeException extends OAuth2Exception
             $previous,
             self::NETWORK_FAILURE,
             $description ?? 'Network connection failed during OAuth2 token exchange',
-            OAuth2ErrorCategory::TOKEN_EXCHANGE,
             true,
             ['retry_after' => 10, 'max_retries' => 3]
         );

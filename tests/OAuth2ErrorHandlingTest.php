@@ -1,8 +1,10 @@
 <?php
 
 use Codeman\FattureInCloud\Exceptions\AuthorizationException;
-use Codeman\FattureInCloud\Exceptions\OAuth2ErrorCategory;
+use Codeman\FattureInCloud\Exceptions\ConfigurationException;
 use Codeman\FattureInCloud\Exceptions\OAuth2ExceptionFactory;
+use Codeman\FattureInCloud\Exceptions\TokenExchangeException;
+use Codeman\FattureInCloud\Exceptions\TokenRefreshException;
 use Codeman\FattureInCloud\Services\OAuth2ErrorHandler;
 use Illuminate\Http\Request;
 
@@ -17,7 +19,7 @@ describe('OAuth2 Error Handling', function () {
 
             expect($exception->getError())->toBe('access_denied');
             expect($exception->getErrorDescription())->toBe('User cancelled');
-            expect($exception->getCategory())->toBe(OAuth2ErrorCategory::AUTHORIZATION);
+            expect($exception)->toBeInstanceOf(AuthorizationException::class);
             expect($exception->isRetryable())->toBe(false);
             expect($exception->getCode())->toBe(401);
         });
@@ -26,7 +28,7 @@ describe('OAuth2 Error Handling', function () {
             $exception = OAuth2ExceptionFactory::networkFailure('Connection timeout');
 
             expect($exception->getError())->toBe('network_failure');
-            expect($exception->getCategory())->toBe(OAuth2ErrorCategory::TOKEN_EXCHANGE);
+            expect($exception)->toBeInstanceOf(TokenExchangeException::class);
             expect($exception->isRetryable())->toBe(true);
             expect($exception->getContext()['retry_after'])->toBe(10);
         });
@@ -35,7 +37,7 @@ describe('OAuth2 Error Handling', function () {
             $exception = OAuth2ExceptionFactory::missingConfiguration('client_id');
 
             expect($exception->getError())->toBe('missing_configuration');
-            expect($exception->getCategory())->toBe(OAuth2ErrorCategory::CONFIGURATION);
+            expect($exception)->toBeInstanceOf(ConfigurationException::class);
             expect($exception->getContext()['missing_config'])->toBe('client_id');
         });
 
@@ -64,7 +66,7 @@ describe('OAuth2 Error Handling', function () {
             $data = json_decode($response->getContent(), true);
             expect($data['status'])->toBe('error');
             expect($data['error'])->toBe('access_denied');
-            expect($data['category'])->toBe('authorization');
+            expect($data['exception_type'])->toBe(AuthorizationException::class);
             expect($data['user_message'])->toContain('Authorization was cancelled');
         });
 
@@ -108,19 +110,19 @@ describe('OAuth2 Error Handling', function () {
         });
     });
 
-    describe('Error Categories', function () {
-        test('correctly categorizes different error types', function () {
+    describe('Exception Types', function () {
+        test('correctly creates different exception types', function () {
             $authError = OAuth2ExceptionFactory::accessDenied();
-            expect($authError->getCategory())->toBe(OAuth2ErrorCategory::AUTHORIZATION);
+            expect($authError)->toBeInstanceOf(AuthorizationException::class);
 
             $tokenError = OAuth2ExceptionFactory::invalidCode();
-            expect($tokenError->getCategory())->toBe(OAuth2ErrorCategory::TOKEN_EXCHANGE);
+            expect($tokenError)->toBeInstanceOf(TokenExchangeException::class);
 
             $refreshError = OAuth2ExceptionFactory::invalidRefreshToken();
-            expect($refreshError->getCategory())->toBe(OAuth2ErrorCategory::TOKEN_REFRESH);
+            expect($refreshError)->toBeInstanceOf(TokenRefreshException::class);
 
             $configError = OAuth2ExceptionFactory::missingConfiguration('client_id');
-            expect($configError->getCategory())->toBe(OAuth2ErrorCategory::CONFIGURATION);
+            expect($configError)->toBeInstanceOf(ConfigurationException::class);
         });
     });
 });

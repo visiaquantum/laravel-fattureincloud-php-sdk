@@ -3,9 +3,11 @@
 namespace Codeman\FattureInCloud\Services;
 
 use Codeman\FattureInCloud\Exceptions\AuthorizationException;
-use Codeman\FattureInCloud\Exceptions\OAuth2ErrorCategory;
+use Codeman\FattureInCloud\Exceptions\ConfigurationException;
 use Codeman\FattureInCloud\Exceptions\OAuth2Exception;
 use Codeman\FattureInCloud\Exceptions\OAuth2ExceptionFactory;
+use Codeman\FattureInCloud\Exceptions\TokenExchangeException;
+use Codeman\FattureInCloud\Exceptions\TokenRefreshException;
 use Exception;
 use FattureInCloud\OAuth2\OAuth2Error;
 use Illuminate\Http\Request;
@@ -96,7 +98,7 @@ class OAuth2ErrorHandler
             'error' => $exception->getError(),
             'message' => $exception->getMessage(),
             'user_message' => $exception->getUserFriendlyMessage(),
-            'category' => $exception->getCategory()->value,
+            'exception_type' => get_class($exception),
         ];
 
         // Add retry information for retryable errors
@@ -118,7 +120,7 @@ class OAuth2ErrorHandler
         if (config('app.debug', false)) {
             $responseData['debug'] = [
                 'error_description' => $exception->getErrorDescription(),
-                'category' => $exception->getCategory()->value,
+                'exception_type' => get_class($exception),
                 'context' => $exception->getContext(),
                 'file' => $exception->getFile(),
                 'line' => $exception->getLine(),
@@ -184,14 +186,15 @@ class OAuth2ErrorHandler
 
     private function determineLogLevel(OAuth2Exception $exception): string
     {
-        return match ($exception->getCategory()) {
-            OAuth2ErrorCategory::CONFIGURATION => 'error',
-            OAuth2ErrorCategory::TOKEN_EXCHANGE, OAuth2ErrorCategory::TOKEN_REFRESH => 'warning',
-            OAuth2ErrorCategory::AUTHORIZATION => match ($exception->getError()) {
+        return match (true) {
+            $exception instanceof ConfigurationException => 'error',
+            $exception instanceof TokenExchangeException, $exception instanceof TokenRefreshException => 'warning',
+            $exception instanceof AuthorizationException => match ($exception->getError()) {
                 OAuth2Exception::ACCESS_DENIED => 'info',  // User choice, not an error
                 OAuth2Exception::SERVER_ERROR, OAuth2Exception::TEMPORARILY_UNAVAILABLE => 'warning',
                 default => 'notice',
             },
+            default => 'warning',
         };
     }
 }

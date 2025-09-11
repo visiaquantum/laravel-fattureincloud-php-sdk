@@ -40,7 +40,6 @@ class TokenRefreshException extends OAuth2Exception
             null,
             $oauth2Error->getError(),
             $oauth2Error->getErrorDescription(),
-            OAuth2ErrorCategory::TOKEN_REFRESH,
             false
         );
     }
@@ -53,7 +52,6 @@ class TokenRefreshException extends OAuth2Exception
             null,
             self::INVALID_REFRESH_TOKEN,
             $description ?? 'The refresh token is invalid, expired, or has been revoked',
-            OAuth2ErrorCategory::TOKEN_REFRESH,
             false,
             ['http_status' => 401, 'action' => 'reauthorize']
         );
@@ -67,7 +65,6 @@ class TokenRefreshException extends OAuth2Exception
             null,
             self::CLIENT_AUTHENTICATION_FAILED,
             $description ?? 'Client authentication failed during token refresh',
-            OAuth2ErrorCategory::TOKEN_REFRESH,
             false,
             ['http_status' => 401, 'action' => 'check_credentials']
         );
@@ -81,7 +78,6 @@ class TokenRefreshException extends OAuth2Exception
             null,
             self::TOKEN_REVOKED,
             $description ?? 'The access token has been revoked by the user or authorization server',
-            OAuth2ErrorCategory::TOKEN_REFRESH,
             false,
             ['http_status' => 401, 'action' => 'reauthorize']
         );

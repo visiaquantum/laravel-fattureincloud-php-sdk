@@ -40,7 +40,6 @@ class ConfigurationException extends OAuth2Exception
             null,
             $oauth2Error->getError(),
             $oauth2Error->getErrorDescription(),
-            OAuth2ErrorCategory::CONFIGURATION,
             false
         );
     }
@@ -53,7 +52,6 @@ class ConfigurationException extends OAuth2Exception
             null,
             self::MISSING_CONFIGURATION,
             $description ?? "Required configuration parameter '{$configKey}' is missing",
-            OAuth2ErrorCategory::CONFIGURATION,
             false,
             ['http_status' => 500, 'missing_config' => $configKey, 'action' => 'check_environment']
         );
@@ -67,7 +65,6 @@ class ConfigurationException extends OAuth2Exception
             null,
             self::INVALID_REDIRECT_URL,
             $description ?? 'The configured redirect URL is invalid or malformed',
-            OAuth2ErrorCategory::CONFIGURATION,
             false,
             ['http_status' => 500, 'invalid_url' => $url, 'action' => 'check_configuration']
         );
@@ -81,7 +78,6 @@ class ConfigurationException extends OAuth2Exception
             null,
             self::MALFORMED_CONFIGURATION,
             $description ?? 'The OAuth2 configuration contains invalid or malformed values',
-            OAuth2ErrorCategory::CONFIGURATION,
             false,
             ['http_status' => 500, 'action' => 'validate_configuration']
         );
