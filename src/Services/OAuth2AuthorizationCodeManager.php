@@ -5,6 +5,7 @@ namespace Codeman\FattureInCloud\Services;
 use Codeman\FattureInCloud\Contracts\OAuth2Manager as OAuth2ManagerContract;
 use Codeman\FattureInCloud\Contracts\StateManager as StateManagerContract;
 use Codeman\FattureInCloud\Exceptions\OAuth2Exception;
+use Codeman\FattureInCloud\Exceptions\OAuth2ExceptionFactory;
 use FattureInCloud\OAuth2\OAuth2AuthorizationCode\OAuth2AuthorizationCodeManager as FattureInCloudOAuth2Manager;
 use FattureInCloud\OAuth2\OAuth2Error;
 use FattureInCloud\OAuth2\OAuth2TokenResponse;
@@ -27,7 +28,7 @@ class OAuth2AuthorizationCodeManager implements OAuth2ManagerContract
     public function getAuthorizationUrl(array $scopes, ?string $state = null): string
     {
         if (! $this->isInitialized()) {
-            throw OAuth2Exception::missingConfiguration(
+            throw OAuth2ExceptionFactory::missingConfiguration(
                 'oauth2_credentials',
                 'OAuth2 manager not initialized. Check CLIENT_ID, CLIENT_SECRET, and REDIRECT_URL configuration.'
             );
@@ -53,14 +54,14 @@ class OAuth2AuthorizationCodeManager implements OAuth2ManagerContract
                 'scopes' => $scopes,
             ]);
 
-            throw OAuth2Exception::serverError('Failed to generate authorization URL: '.$e->getMessage());
+            throw OAuth2ExceptionFactory::serverError('Failed to generate authorization URL: '.$e->getMessage());
         }
     }
 
     public function fetchToken(string $code, string $state): OAuth2TokenResponse
     {
         if (! $this->isInitialized()) {
-            throw OAuth2Exception::missingConfiguration(
+            throw OAuth2ExceptionFactory::missingConfiguration(
                 'oauth2_credentials',
                 'OAuth2 manager not initialized. Cannot fetch token.'
             );
@@ -71,7 +72,7 @@ class OAuth2AuthorizationCodeManager implements OAuth2ManagerContract
                 'provided_state' => substr($state, 0, 8).'...',
             ]);
 
-            throw OAuth2Exception::invalidRequest('Invalid state parameter. Possible CSRF attack or session expired.');
+            throw OAuth2ExceptionFactory::invalidRequest('Invalid state parameter. Possible CSRF attack or session expired.');
         }
 
         try {
@@ -83,7 +84,7 @@ class OAuth2AuthorizationCodeManager implements OAuth2ManagerContract
                     'error_description' => $tokenResponse->getErrorDescription(),
                 ]);
 
-                throw OAuth2Exception::fromOAuth2Error($tokenResponse);
+                throw OAuth2ExceptionFactory::fromOAuth2Error($tokenResponse);
             }
 
             $this->stateManager->clear();
@@ -105,17 +106,17 @@ class OAuth2AuthorizationCodeManager implements OAuth2ManagerContract
 
             // Check if it's a network-related error
             if ($this->isNetworkError($e)) {
-                throw OAuth2Exception::networkFailure('Network error during token exchange', $e);
+                throw OAuth2ExceptionFactory::networkFailure('Network error during token exchange', $e);
             }
 
-            throw OAuth2Exception::invalidCode('Token exchange failed: '.$e->getMessage());
+            throw OAuth2ExceptionFactory::invalidCode('Token exchange failed: '.$e->getMessage());
         }
     }
 
     public function refreshToken(string $refreshToken): ?OAuth2TokenResponse
     {
         if (! $this->isInitialized()) {
-            throw OAuth2Exception::missingConfiguration(
+            throw OAuth2ExceptionFactory::missingConfiguration(
                 'oauth2_credentials',
                 'OAuth2 manager not initialized. Cannot refresh token.'
             );
@@ -132,9 +133,9 @@ class OAuth2AuthorizationCodeManager implements OAuth2ManagerContract
 
                 // Map OAuth2Error to specific refresh token exceptions
                 throw match ($tokenResponse->getError()) {
-                    'invalid_grant' => OAuth2Exception::invalidRefreshToken($tokenResponse->getErrorDescription()),
-                    'invalid_client', 'unauthorized_client' => OAuth2Exception::clientAuthenticationFailed($tokenResponse->getErrorDescription()),
-                    default => OAuth2Exception::fromOAuth2Error($tokenResponse),
+                    'invalid_grant' => OAuth2ExceptionFactory::invalidRefreshToken($tokenResponse->getErrorDescription()),
+                    'invalid_client', 'unauthorized_client' => OAuth2ExceptionFactory::clientAuthenticationFailed($tokenResponse->getErrorDescription()),
+                    default => OAuth2ExceptionFactory::fromOAuth2Error($tokenResponse),
                 };
             }
 
@@ -155,10 +156,10 @@ class OAuth2AuthorizationCodeManager implements OAuth2ManagerContract
 
             // Check if it's a network-related error
             if ($this->isNetworkError($e)) {
-                throw OAuth2Exception::networkFailure('Network error during token refresh', $e);
+                throw OAuth2ExceptionFactory::networkFailure('Network error during token refresh', $e);
             }
 
-            throw OAuth2Exception::invalidRefreshToken('Token refresh failed: '.$e->getMessage());
+            throw OAuth2ExceptionFactory::invalidRefreshToken('Token refresh failed: '.$e->getMessage());
         }
     }
 
@@ -187,7 +188,7 @@ class OAuth2AuthorizationCodeManager implements OAuth2ManagerContract
                 'redirect_url' => $this->redirectUrl,
             ]);
 
-            throw OAuth2Exception::malformedConfiguration('Failed to initialize OAuth2 manager: '.$e->getMessage());
+            throw OAuth2ExceptionFactory::malformedConfiguration('Failed to initialize OAuth2 manager: '.$e->getMessage());
         }
     }
 

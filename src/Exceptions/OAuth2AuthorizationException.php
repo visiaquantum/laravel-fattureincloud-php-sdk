@@ -8,7 +8,7 @@ use FattureInCloud\OAuth2\OAuth2Error;
  * OAuth2 Authorization-specific exceptions
  * Handles errors during the authorization flow
  */
-class AuthorizationException extends OAuth2Exception
+class OAuth2AuthorizationException extends OAuth2Exception
 {
     // Authorization-specific error codes
     public const UNAUTHORIZED_CLIENT = 'unauthorized_client';
@@ -46,7 +46,6 @@ class AuthorizationException extends OAuth2Exception
             null,
             $oauth2Error->getError(),
             $oauth2Error->getErrorDescription(),
-            OAuth2ErrorCategory::AUTHORIZATION,
             $isRetryable
         );
     }
@@ -59,7 +58,6 @@ class AuthorizationException extends OAuth2Exception
             null,
             self::ACCESS_DENIED,
             $description ?? 'The user denied the authorization request',
-            OAuth2ErrorCategory::AUTHORIZATION,
             false,
             ['http_status' => 401, 'user_action' => 'cancelled']
         );
@@ -73,7 +71,6 @@ class AuthorizationException extends OAuth2Exception
             null,
             self::INVALID_REQUEST,
             $description ?? 'The request is missing a required parameter or is otherwise malformed',
-            OAuth2ErrorCategory::AUTHORIZATION,
             false,
             array_merge(['http_status' => 400], $context ?? [])
         );
@@ -87,7 +84,6 @@ class AuthorizationException extends OAuth2Exception
             null,
             self::UNAUTHORIZED_CLIENT,
             $description ?? 'The client is not authorized to request an authorization code',
-            OAuth2ErrorCategory::AUTHORIZATION,
             false,
             ['http_status' => 401]
         );
@@ -101,7 +97,6 @@ class AuthorizationException extends OAuth2Exception
             null,
             self::UNSUPPORTED_RESPONSE_TYPE,
             $description ?? 'The authorization server does not support the response type',
-            OAuth2ErrorCategory::AUTHORIZATION,
             false,
             ['http_status' => 400]
         );
@@ -115,7 +110,6 @@ class AuthorizationException extends OAuth2Exception
             null,
             self::INVALID_SCOPE,
             $description ?? 'The requested scope is invalid, unknown, or malformed',
-            OAuth2ErrorCategory::AUTHORIZATION,
             false,
             ['http_status' => 400]
         );
@@ -129,7 +123,6 @@ class AuthorizationException extends OAuth2Exception
             null,
             self::SERVER_ERROR,
             $description ?? 'The authorization server encountered an unexpected condition',
-            OAuth2ErrorCategory::AUTHORIZATION,
             true,
             ['http_status' => 500, 'retry_after' => 30]
         );
@@ -143,7 +136,6 @@ class AuthorizationException extends OAuth2Exception
             null,
             self::TEMPORARILY_UNAVAILABLE,
             $description ?? 'The authorization server is temporarily overloaded or under maintenance',
-            OAuth2ErrorCategory::AUTHORIZATION,
             true,
             ['http_status' => 503, 'retry_after' => 60]
         );
