@@ -8,7 +8,7 @@ use FattureInCloud\OAuth2\OAuth2Error;
  * OAuth2 Authorization-specific exceptions
  * Handles errors during the authorization flow
  */
-class AuthorizationException extends OAuth2Exception
+class OAuth2AuthorizationException extends OAuth2Exception
 {
     // Authorization-specific error codes
     public const UNAUTHORIZED_CLIENT = 'unauthorized_client';

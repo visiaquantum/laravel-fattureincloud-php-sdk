@@ -9,7 +9,7 @@ use FattureInCloud\OAuth2\OAuth2Error;
  * OAuth2 Token Exchange-specific exceptions
  * Handles errors during authorization code to token exchange
  */
-class TokenExchangeException extends OAuth2Exception
+class OAuth2TokenExchangeException extends OAuth2Exception
 {
     // Token exchange error codes
     public const INVALID_CODE = 'invalid_code';

@@ -8,7 +8,7 @@ use FattureInCloud\OAuth2\OAuth2Error;
  * OAuth2 Token Refresh-specific exceptions
  * Handles errors during token refresh operations
  */
-class TokenRefreshException extends OAuth2Exception
+class OAuth2TokenRefreshException extends OAuth2Exception
 {
     // Token refresh error codes
     public const INVALID_REFRESH_TOKEN = 'invalid_refresh_token';

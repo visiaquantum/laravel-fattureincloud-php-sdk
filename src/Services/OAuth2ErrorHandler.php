@@ -2,12 +2,12 @@
 
 namespace Codeman\FattureInCloud\Services;
 
-use Codeman\FattureInCloud\Exceptions\AuthorizationException;
-use Codeman\FattureInCloud\Exceptions\ConfigurationException;
+use Codeman\FattureInCloud\Exceptions\OAuth2AuthorizationException;
+use Codeman\FattureInCloud\Exceptions\OAuth2ConfigurationException;
 use Codeman\FattureInCloud\Exceptions\OAuth2Exception;
 use Codeman\FattureInCloud\Exceptions\OAuth2ExceptionFactory;
-use Codeman\FattureInCloud\Exceptions\TokenExchangeException;
-use Codeman\FattureInCloud\Exceptions\TokenRefreshException;
+use Codeman\FattureInCloud\Exceptions\OAuth2TokenExchangeException;
+use Codeman\FattureInCloud\Exceptions\OAuth2TokenRefreshException;
 use Exception;
 use FattureInCloud\OAuth2\OAuth2Error;
 use Illuminate\Http\Request;
@@ -22,13 +22,13 @@ class OAuth2ErrorHandler
         $errorDescription = $request->get('error_description', 'No description provided');
 
         $exception = match ($error) {
-            AuthorizationException::ACCESS_DENIED => OAuth2ExceptionFactory::accessDenied($errorDescription),
-            AuthorizationException::INVALID_REQUEST => OAuth2ExceptionFactory::invalidRequest($errorDescription),
-            AuthorizationException::UNAUTHORIZED_CLIENT => OAuth2ExceptionFactory::unauthorizedClient($errorDescription),
-            AuthorizationException::UNSUPPORTED_RESPONSE_TYPE => OAuth2ExceptionFactory::unsupportedResponseType($errorDescription),
-            AuthorizationException::INVALID_SCOPE => OAuth2ExceptionFactory::invalidScope($errorDescription),
-            AuthorizationException::SERVER_ERROR => OAuth2ExceptionFactory::serverError($errorDescription),
-            AuthorizationException::TEMPORARILY_UNAVAILABLE => OAuth2ExceptionFactory::temporarilyUnavailable($errorDescription),
+            OAuth2AuthorizationException::ACCESS_DENIED => OAuth2ExceptionFactory::accessDenied($errorDescription),
+            OAuth2AuthorizationException::INVALID_REQUEST => OAuth2ExceptionFactory::invalidRequest($errorDescription),
+            OAuth2AuthorizationException::UNAUTHORIZED_CLIENT => OAuth2ExceptionFactory::unauthorizedClient($errorDescription),
+            OAuth2AuthorizationException::UNSUPPORTED_RESPONSE_TYPE => OAuth2ExceptionFactory::unsupportedResponseType($errorDescription),
+            OAuth2AuthorizationException::INVALID_SCOPE => OAuth2ExceptionFactory::invalidScope($errorDescription),
+            OAuth2AuthorizationException::SERVER_ERROR => OAuth2ExceptionFactory::serverError($errorDescription),
+            OAuth2AuthorizationException::TEMPORARILY_UNAVAILABLE => OAuth2ExceptionFactory::temporarilyUnavailable($errorDescription),
             default => OAuth2ExceptionFactory::invalidRequest("Unknown OAuth2 error: {$error}. {$errorDescription}"),
         };
 
@@ -187,9 +187,9 @@ class OAuth2ErrorHandler
     private function determineLogLevel(OAuth2Exception $exception): string
     {
         return match (true) {
-            $exception instanceof ConfigurationException => 'error',
-            $exception instanceof TokenExchangeException, $exception instanceof TokenRefreshException => 'warning',
-            $exception instanceof AuthorizationException => match ($exception->getError()) {
+            $exception instanceof OAuth2ConfigurationException => 'error',
+            $exception instanceof OAuth2TokenExchangeException, $exception instanceof OAuth2TokenRefreshException => 'warning',
+            $exception instanceof OAuth2AuthorizationException => match ($exception->getError()) {
                 OAuth2Exception::ACCESS_DENIED => 'info',  // User choice, not an error
                 OAuth2Exception::SERVER_ERROR, OAuth2Exception::TEMPORARILY_UNAVAILABLE => 'warning',
                 default => 'notice',

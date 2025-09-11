@@ -8,7 +8,7 @@ use FattureInCloud\OAuth2\OAuth2Error;
  * OAuth2 Configuration-specific exceptions
  * Handles errors related to application configuration
  */
-class ConfigurationException extends OAuth2Exception
+class OAuth2ConfigurationException extends OAuth2Exception
 {
     // Configuration error codes
     public const MISSING_CONFIGURATION = 'missing_configuration';
