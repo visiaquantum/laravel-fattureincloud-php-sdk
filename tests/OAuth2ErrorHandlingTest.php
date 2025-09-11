@@ -2,7 +2,6 @@
 
 use Codeman\FattureInCloud\Exceptions\AuthorizationException;
 use Codeman\FattureInCloud\Exceptions\OAuth2ErrorCategory;
-use Codeman\FattureInCloud\Exceptions\OAuth2Exception;
 use Codeman\FattureInCloud\Exceptions\OAuth2ExceptionFactory;
 use Codeman\FattureInCloud\Services\OAuth2ErrorHandler;
 use Illuminate\Http\Request;
