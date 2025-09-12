@@ -32,6 +32,10 @@ describe('FattureInCloudServiceProvider', function () {
                 ->once()
                 ->andReturnSelf();
 
+            $package->shouldReceive('hasTranslations')
+                ->once()
+                ->andReturnSelf();
+
             $package->shouldReceive('hasRoute')
                 ->once()
                 ->with('web')

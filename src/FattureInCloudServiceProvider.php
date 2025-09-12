@@ -32,6 +32,7 @@ class FattureInCloudServiceProvider extends PackageServiceProvider
         $package
             ->name('laravel-fatture-in-cloud')
             ->hasConfigFile()
+            ->hasTranslations()
             ->hasRoute('web');
     }
 

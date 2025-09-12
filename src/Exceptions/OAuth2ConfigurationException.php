@@ -20,10 +20,10 @@ class OAuth2ConfigurationException extends OAuth2Exception
     public function getUserFriendlyMessage(): string
     {
         return match ($this->error) {
-            self::MISSING_CONFIGURATION => 'Application configuration is incomplete. Please contact support.',
-            self::INVALID_REDIRECT_URL => 'Invalid redirect URL configuration. Please contact support.',
-            self::MALFORMED_CONFIGURATION => 'Application configuration error. Please contact support.',
-            default => 'A configuration error occurred. Please contact support.',
+            self::MISSING_CONFIGURATION => __('fatture-in-cloud::fatture-in-cloud.oauth2.configuration.missing_configuration'),
+            self::INVALID_REDIRECT_URL => __('fatture-in-cloud::fatture-in-cloud.oauth2.configuration.invalid_redirect_url'),
+            self::MALFORMED_CONFIGURATION => __('fatture-in-cloud::fatture-in-cloud.oauth2.configuration.malformed_configuration'),
+            default => __('fatture-in-cloud::fatture-in-cloud.oauth2.configuration.default'),
         };
     }
 

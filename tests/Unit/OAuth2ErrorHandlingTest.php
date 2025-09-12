@@ -67,7 +67,7 @@ describe('OAuth2 Error Handling', function () {
             expect($data['status'])->toBe('error');
             expect($data['error'])->toBe('access_denied');
             expect($data['exception_type'])->toBe(OAuth2AuthorizationException::class);
-            expect($data['user_message'])->toContain('Authorization was cancelled');
+            expect($data['user_message'])->toBe('Authorization was cancelled. Please try again if you want to connect your account.');
         });
 
         test('creates success response correctly', function () {

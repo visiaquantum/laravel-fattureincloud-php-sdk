@@ -21,10 +21,10 @@ class OAuth2TokenExchangeException extends OAuth2Exception
     public function getUserFriendlyMessage(): string
     {
         return match ($this->error) {
-            self::INVALID_CODE => 'The authorization code has expired or is invalid. Please restart the authorization process.',
-            self::INVALID_CLIENT_CREDENTIALS => 'Application credentials are invalid. Please contact support.',
-            self::NETWORK_FAILURE => 'Network connection failed. Please check your connection and try again.',
-            default => 'A token exchange error occurred. Please try again or contact support.',
+            self::INVALID_CODE => __('fatture-in-cloud::fatture-in-cloud.oauth2.token_exchange.invalid_code'),
+            self::INVALID_CLIENT_CREDENTIALS => __('fatture-in-cloud::fatture-in-cloud.oauth2.token_exchange.invalid_client_credentials'),
+            self::NETWORK_FAILURE => __('fatture-in-cloud::fatture-in-cloud.oauth2.token_exchange.network_failure'),
+            default => __('fatture-in-cloud::fatture-in-cloud.oauth2.token_exchange.default'),
         };
     }
 
