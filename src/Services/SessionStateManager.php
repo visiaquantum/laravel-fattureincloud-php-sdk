@@ -31,6 +31,11 @@ class SessionStateManager implements StateManagerContract
         return $storedState && hash_equals($storedState, $state);
     }
 
+    public function validateState(string $state): bool
+    {
+        return $this->validate($state);
+    }
+
     public function clear(): void
     {
         $this->session->forget(self::STATE_KEY);

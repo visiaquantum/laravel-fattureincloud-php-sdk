@@ -209,8 +209,9 @@ describe('FattureInCloudSdk', function () {
                 ->once()
                 ->with('default');
 
-            expect(fn () => $this->sdk->refreshToken())
-                ->toThrow(Exception::class, 'Refresh failed');
+            $result = $this->sdk->refreshToken();
+
+            expect($result)->toBeNull();
         });
 
         test('isTokenExpired delegates to token storage', function () {

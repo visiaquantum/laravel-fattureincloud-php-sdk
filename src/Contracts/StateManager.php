@@ -10,5 +10,7 @@ interface StateManager
 
     public function validate(string $state): bool;
 
+    public function validateState(string $state): bool;
+
     public function clear(): void;
 }

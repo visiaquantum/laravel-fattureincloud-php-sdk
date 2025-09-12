@@ -8,6 +8,8 @@ interface TokenStorage
 {
     public function store(string $key, OAuth2TokenResponse $token): void;
 
+    public function storeTokens(string $key, string $accessToken, string $refreshToken, int $expiresAt): void;
+
     public function retrieve(string $key): ?array;
 
     public function clear(string $key): void;

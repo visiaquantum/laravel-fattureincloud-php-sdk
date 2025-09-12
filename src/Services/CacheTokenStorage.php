@@ -25,6 +25,17 @@ class CacheTokenStorage implements TokenStorageContract
         $this->cache->put($this->getCacheKey($key), $encryptedData, now()->addYear());
     }
 
+    public function storeTokens(string $key, string $accessToken, string $refreshToken, int $expiresAt): void
+    {
+        $encryptedData = $this->encrypter->encrypt([
+            'access_token' => $accessToken,
+            'refresh_token' => $refreshToken,
+            'expires_at' => $expiresAt,
+        ]);
+
+        $this->cache->put($this->getCacheKey($key), $encryptedData, now()->addYear());
+    }
+
     public function retrieve(string $key): ?array
     {
         $encryptedData = $this->cache->get($this->getCacheKey($key));

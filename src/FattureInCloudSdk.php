@@ -19,6 +19,7 @@ use FattureInCloud\Api\SettingsApi;
 use FattureInCloud\Api\SuppliersApi;
 use FattureInCloud\Api\TaxesApi;
 use FattureInCloud\Api\UserApi;
+use FattureInCloud\OAuth2\OAuth2Error;
 use FattureInCloud\OAuth2\OAuth2TokenResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -118,6 +119,21 @@ class FattureInCloudSdk
      */
     public function handleOAuth2Callback(Request $request): OAuth2TokenResponse
     {
+        return $this->handleCallback($request);
+    }
+
+    /**
+     * Handle the OAuth2 authorization callback from Fatture in Cloud.
+     * 
+     * This is an alias method for backward compatibility and convenience.
+     *
+     * @param  Request  $request  Laravel HTTP request containing callback parameters
+     * @return OAuth2TokenResponse|OAuth2Error The token response or OAuth2 error
+     *
+     * @throws \InvalidArgumentException If OAuth2 error occurred or required parameters are missing
+     */
+    public function handleCallback(Request $request)
+    {
         $code = $request->get('code');
         $state = $request->get('state');
         $error = $request->get('error');
@@ -145,14 +161,17 @@ class FattureInCloudSdk
         try {
             $tokenResponse = $this->oauthManager->refreshToken($refreshToken);
 
-            if ($tokenResponse) {
+            if ($tokenResponse instanceof OAuth2TokenResponse) {
                 $this->tokenStorage->store($this->contextKey, $tokenResponse);
+                return $tokenResponse;
             }
 
-            return $tokenResponse;
+            // If we get an OAuth2Error or null, clear tokens and return null
+            $this->tokenStorage->clear($this->contextKey);
+            return null;
         } catch (\Exception $e) {
             $this->tokenStorage->clear($this->contextKey);
-            throw $e;
+            return null;
         }
     }
 
