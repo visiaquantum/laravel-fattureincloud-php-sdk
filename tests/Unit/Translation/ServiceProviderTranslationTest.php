@@ -27,7 +27,7 @@ describe('Service Provider Translation Registration', function () {
 
             // The path should point to our package's lang directory
             $paths = $namespaces['fatture-in-cloud'];
-            
+
             // Handle both string and array cases - Laravel may return either
             if (is_string($paths)) {
                 $pathsArray = [$paths];
@@ -35,7 +35,7 @@ describe('Service Provider Translation Registration', function () {
                 expect($paths)->toBeArray();
                 $pathsArray = $paths;
             }
-            
+
             expect($pathsArray)->not->toBeEmpty();
 
             // Check that at least one path contains our package structure

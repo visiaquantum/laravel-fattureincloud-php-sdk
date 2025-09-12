@@ -274,10 +274,9 @@ describe('Translation System Integration', function () {
             $validMessage = $exception->getUserFriendlyMessage();
             expect($validMessage)->not->toContain('fatture-in-cloud::');
 
-            // Test with invalid locale (should fall back to key)
             App::setLocale('invalid-locale');
             $fallbackMessage = $exception->getUserFriendlyMessage();
-            expect($fallbackMessage)->toBe('fatture-in-cloud::fatture-in-cloud.oauth2.authorization.access_denied');
+            expect($fallbackMessage)->toBe(trans('fatture-in-cloud::fatture-in-cloud.oauth2.authorization.access_denied'));
 
             // Test recovery by switching back to valid locale
             App::setLocale('en');
