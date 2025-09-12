@@ -124,7 +124,7 @@ class FattureInCloudSdk
 
     /**
      * Handle the OAuth2 authorization callback from Fatture in Cloud.
-     * 
+     *
      * This is an alias method for backward compatibility and convenience.
      *
      * @param  Request  $request  Laravel HTTP request containing callback parameters
@@ -163,16 +163,19 @@ class FattureInCloudSdk
 
             if ($tokenResponse instanceof OAuth2TokenResponse) {
                 $this->tokenStorage->store($this->contextKey, $tokenResponse);
+
                 return $tokenResponse;
             }
-
-            // If we get an OAuth2Error or null, clear tokens and return null
-            $this->tokenStorage->clear($this->contextKey);
-            return null;
         } catch (\Exception $e) {
-            $this->tokenStorage->clear($this->contextKey);
-            return null;
+            logger()->error('Failed to refresh OAuth2 token', [
+                'error' => $e->getMessage(),
+            ]);
         }
+
+        // If we get an OAuth2Error or null, clear tokens and return null
+        $this->tokenStorage->clear($this->contextKey);
+
+        return null;
     }
 
     public function setCompany(int $companyId): self

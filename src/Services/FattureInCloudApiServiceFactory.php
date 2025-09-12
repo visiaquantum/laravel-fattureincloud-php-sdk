@@ -58,7 +58,7 @@ class FattureInCloudApiServiceFactory implements ApiServiceFactoryContract
 
         // Create a fresh configuration with current token if TokenStorage is available
         $config = clone $this->configuration;
-        
+
         if ($this->tokenStorage) {
             $currentToken = $this->tokenStorage->getAccessToken($this->contextKey);
             if ($currentToken) {

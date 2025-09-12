@@ -3,30 +3,23 @@
 use Codeman\FattureInCloud\Contracts\ApiServiceFactory as ApiServiceFactoryContract;
 use Codeman\FattureInCloud\Facades\FattureInCloud;
 use Codeman\FattureInCloud\FattureInCloudSdk;
+use FattureInCloud\Api\ArchiveApi;
+use FattureInCloud\Api\CashbookApi;
 use FattureInCloud\Api\ClientsApi;
 use FattureInCloud\Api\CompaniesApi;
 use FattureInCloud\Api\InfoApi;
 use FattureInCloud\Api\IssuedDocumentsApi;
+use FattureInCloud\Api\PriceListsApi;
 use FattureInCloud\Api\ProductsApi;
 use FattureInCloud\Api\ReceiptsApi;
 use FattureInCloud\Api\ReceivedDocumentsApi;
+use FattureInCloud\Api\SettingsApi;
 use FattureInCloud\Api\SuppliersApi;
 use FattureInCloud\Api\TaxesApi;
 use FattureInCloud\Api\UserApi;
-use FattureInCloud\Api\SettingsApi;
-use FattureInCloud\Api\ArchiveApi;
-use FattureInCloud\Api\CashbookApi;
-use FattureInCloud\Api\PriceListsApi;
 use FattureInCloud\Configuration;
 use FattureInCloud\Model\Client;
-use FattureInCloud\Model\Company;
-use FattureInCloud\Model\GetCompaniesResponse;
 use FattureInCloud\Model\GetCompanyInfoResponse;
-use FattureInCloud\Model\GetClientsResponse;
-use FattureInCloud\Model\GetInfoResponse;
-use FattureInCloud\Model\IssuedDocument;
-use FattureInCloud\Model\Product;
-use FattureInCloud\Model\Supplier;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -41,7 +34,7 @@ describe('API Operations Integration', function () {
         // Mock HTTP responses container
         $this->httpHistory = [];
         $this->mockResponses = [];
-        $this->mockHandler = new MockHandler();
+        $this->mockHandler = new MockHandler;
         $this->handlerStack = HandlerStack::create($this->mockHandler);
         $this->handlerStack->push(Middleware::history($this->httpHistory));
 
@@ -195,9 +188,9 @@ describe('API Operations Integration', function () {
                         'id' => 12345,
                         'name' => 'Test Company',
                         'type' => 'company',
-                        'access_token' => 'token123'
-                    ]
-                ]
+                        'access_token' => 'token123',
+                    ],
+                ],
             ]));
 
             $mockHandler = new MockHandler([$mockResponse]);
@@ -205,7 +198,7 @@ describe('API Operations Integration', function () {
             $mockHttpClient = new HttpClient(['handler' => $handlerStack]);
 
             // Create API service with mocked HTTP client
-            $config = new Configuration();
+            $config = new Configuration;
             $config->setAccessToken('test-token');
 
             $companiesApi = new CompaniesApi($mockHttpClient, $config);
@@ -219,14 +212,14 @@ describe('API Operations Integration', function () {
             // Mock an error response
             $mockResponse = new Response(401, [], json_encode([
                 'error' => 'unauthorized',
-                'error_description' => 'Invalid access token'
+                'error_description' => 'Invalid access token',
             ]));
 
             $mockHandler = new MockHandler([$mockResponse]);
             $handlerStack = HandlerStack::create($mockHandler);
             $mockHttpClient = new HttpClient(['handler' => $handlerStack]);
 
-            $config = new Configuration();
+            $config = new Configuration;
             $config->setAccessToken('invalid-token');
 
             $userApi = new UserApi($mockHttpClient, $config);
@@ -245,7 +238,7 @@ describe('API Operations Integration', function () {
             $handlerStack->push(Middleware::history($history));
             $mockHttpClient = new HttpClient(['handler' => $handlerStack]);
 
-            $config = new Configuration();
+            $config = new Configuration;
             $config->setAccessToken('test-access-token-12345');
 
             $companiesApi = new CompaniesApi($mockHttpClient, $config);
@@ -265,7 +258,7 @@ describe('API Operations Integration', function () {
             $handlerStack->push(Middleware::history($history));
             $mockHttpClient = new HttpClient(['handler' => $handlerStack]);
 
-            $config = new Configuration();
+            $config = new Configuration;
             $config->setAccessToken('test-token');
 
             $companiesApi = new CompaniesApi($mockHttpClient, $config);
@@ -286,8 +279,8 @@ describe('API Operations Integration', function () {
                 'data' => [
                     'id' => 123,
                     'name' => 'Test Client',
-                    'code' => 'TC001'
-                ]
+                    'code' => 'TC001',
+                ],
             ]));
 
             $history = [];
@@ -296,7 +289,7 @@ describe('API Operations Integration', function () {
             $handlerStack->push(Middleware::history($history));
             $mockHttpClient = new HttpClient(['handler' => $handlerStack]);
 
-            $config = new Configuration();
+            $config = new Configuration;
             $config->setAccessToken('test-token');
 
             $clientsApi = new ClientsApi($mockHttpClient, $config);

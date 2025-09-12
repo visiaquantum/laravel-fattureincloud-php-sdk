@@ -20,14 +20,14 @@ class OAuth2AuthorizationException extends OAuth2Exception
     public function getUserFriendlyMessage(): string
     {
         return match ($this->error) {
-            self::ACCESS_DENIED => 'Authorization was cancelled. Please try again if you want to connect your account.',
-            self::INVALID_REQUEST => 'There was a problem with the authorization request. Please contact support.',
-            self::UNAUTHORIZED_CLIENT => 'This application is not authorized to access your account.',
-            self::UNSUPPORTED_RESPONSE_TYPE => 'Authorization method not supported. Please contact support.',
-            self::INVALID_SCOPE => 'The requested permissions are not available.',
-            self::SERVER_ERROR => 'A temporary server error occurred. Please try again in a moment.',
-            self::TEMPORARILY_UNAVAILABLE => 'The service is temporarily unavailable. Please try again later.',
-            default => 'An authorization error occurred. Please try again or contact support.',
+            self::ACCESS_DENIED => __('fatture-in-cloud::fatture-in-cloud.oauth2.authorization.access_denied'),
+            self::INVALID_REQUEST => __('fatture-in-cloud::fatture-in-cloud.oauth2.authorization.invalid_request'),
+            self::UNAUTHORIZED_CLIENT => __('fatture-in-cloud::fatture-in-cloud.oauth2.authorization.unauthorized_client'),
+            self::UNSUPPORTED_RESPONSE_TYPE => __('fatture-in-cloud::fatture-in-cloud.oauth2.authorization.unsupported_response_type'),
+            self::INVALID_SCOPE => __('fatture-in-cloud::fatture-in-cloud.oauth2.authorization.invalid_scope'),
+            self::SERVER_ERROR => __('fatture-in-cloud::fatture-in-cloud.oauth2.authorization.server_error'),
+            self::TEMPORARILY_UNAVAILABLE => __('fatture-in-cloud::fatture-in-cloud.oauth2.authorization.temporarily_unavailable'),
+            default => __('fatture-in-cloud::fatture-in-cloud.oauth2.authorization.default'),
         };
     }
 

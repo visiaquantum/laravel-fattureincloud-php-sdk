@@ -20,10 +20,10 @@ class OAuth2TokenRefreshException extends OAuth2Exception
     public function getUserFriendlyMessage(): string
     {
         return match ($this->error) {
-            self::INVALID_REFRESH_TOKEN => 'Your session has expired. Please log in again.',
-            self::CLIENT_AUTHENTICATION_FAILED => 'Authentication failed. Please try logging in again.',
-            self::TOKEN_REVOKED => 'Your access has been revoked. Please log in again.',
-            default => 'A token refresh error occurred. Please log in again.',
+            self::INVALID_REFRESH_TOKEN => __('fatture-in-cloud::fatture-in-cloud.oauth2.token_refresh.invalid_refresh_token'),
+            self::CLIENT_AUTHENTICATION_FAILED => __('fatture-in-cloud::fatture-in-cloud.oauth2.token_refresh.client_authentication_failed'),
+            self::TOKEN_REVOKED => __('fatture-in-cloud::fatture-in-cloud.oauth2.token_refresh.token_revoked'),
+            default => __('fatture-in-cloud::fatture-in-cloud.oauth2.token_refresh.default'),
         };
     }
 
