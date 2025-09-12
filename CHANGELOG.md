@@ -2,6 +2,17 @@
 
 All notable changes to `laravel-fattureincloud-php-sdk` will be documented in this file.
 
+## v0.0.2 - 2025-09-12
+
+### What's Changed
+
+* Add OAuth2 helper methods for Laravel integration by @deshack in https://github.com/visiaquantum/laravel-fattureincloud-php-sdk/pull/21
+* feat: Add comprehensive OAuth2 error handling system by @deshack in https://github.com/visiaquantum/laravel-fattureincloud-php-sdk/pull/22
+* Complete testing implementation for issue #5 by @deshack in https://github.com/visiaquantum/laravel-fattureincloud-php-sdk/pull/23
+* Make getUserFriendlyMessage exception messages translatable by @deshack in https://github.com/visiaquantum/laravel-fattureincloud-php-sdk/pull/25
+
+**Full Changelog**: https://github.com/visiaquantum/laravel-fattureincloud-php-sdk/compare/v0.0.1...v0.0.2
+
 ## v0.0.1 - 2025-09-09
 
 ### What's Changed
