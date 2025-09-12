@@ -32,13 +32,11 @@ class FattureInCloudSdk
     private ?string $currentCompanyId = null;
 
     public function __construct(
-        private OAuth2Manager     $oauthManager,
-        private TokenStorage      $tokenStorage,
+        private OAuth2Manager $oauthManager,
+        private TokenStorage $tokenStorage,
         private ApiServiceFactory $apiFactory,
-        private string            $contextKey = 'default'
-    )
-    {
-    }
+        private string $contextKey = 'default'
+    ) {}
 
     public function auth(): OAuth2Manager
     {
@@ -65,7 +63,7 @@ class FattureInCloudSdk
      * redirect() helper to return a RedirectResponse that can be used directly from
      * controllers.
      *
-     * @param array $scopes Array of OAuth2 scopes to request (e.g., [Scope::ENTITY_CLIENTS_READ])
+     * @param  array  $scopes  Array of OAuth2 scopes to request (e.g., [Scope::ENTITY_CLIENTS_READ])
      * @return RedirectResponse Laravel redirect response to the authorization URL
      *
      * @throws \LogicException If OAuth2 manager is not properly initialized
@@ -84,7 +82,7 @@ class FattureInCloudSdk
      */
     public function redirectToAuthorization(array $scopes): RedirectResponse
     {
-        if (!$this->oauthManager->isInitialized()) {
+        if (! $this->oauthManager->isInitialized()) {
             throw new \LogicException('OAuth2 manager is not initialized. Please ensure FATTUREINCLOUD_CLIENT_ID and FATTUREINCLOUD_CLIENT_SECRET are configured.');
         }
 
@@ -100,7 +98,7 @@ class FattureInCloudSdk
      * validates the parameters, exchanges the authorization code for tokens, and
      * stores the tokens automatically.
      *
-     * @param Request $request Laravel HTTP request containing callback parameters
+     * @param  Request  $request  Laravel HTTP request containing callback parameters
      * @return OAuth2TokenResponse The token response containing access and refresh tokens
      *
      * @throws \InvalidArgumentException If OAuth2 error occurred or required parameters are missing
@@ -129,7 +127,7 @@ class FattureInCloudSdk
      *
      * This is an alias method for backward compatibility and convenience.
      *
-     * @param Request $request Laravel HTTP request containing callback parameters
+     * @param  Request  $request  Laravel HTTP request containing callback parameters
      * @return OAuth2TokenResponse|OAuth2Error The token response or OAuth2 error
      *
      * @throws \InvalidArgumentException If OAuth2 error occurred or required parameters are missing
@@ -142,10 +140,10 @@ class FattureInCloudSdk
         $errorDescription = $request->get('error_description');
 
         if ($error) {
-            throw new \InvalidArgumentException("OAuth2 authorization failed: {$error}" . ($errorDescription ? " - {$errorDescription}" : ''));
+            throw new \InvalidArgumentException("OAuth2 authorization failed: {$error}".($errorDescription ? " - {$errorDescription}" : ''));
         }
 
-        if (!$code || !$state) {
+        if (! $code || ! $state) {
             throw new \InvalidArgumentException('Missing required OAuth2 callback parameters: code and state are required');
         }
 
@@ -156,7 +154,7 @@ class FattureInCloudSdk
     {
         $refreshToken = $this->tokenStorage->getRefreshToken($this->contextKey);
 
-        if (!$refreshToken) {
+        if (! $refreshToken) {
             return null;
         }
 
@@ -182,7 +180,7 @@ class FattureInCloudSdk
 
     public function setCompany(int $companyId): self
     {
-        $this->currentCompanyId = (string)$companyId;
+        $this->currentCompanyId = (string) $companyId;
 
         return $this;
     }
